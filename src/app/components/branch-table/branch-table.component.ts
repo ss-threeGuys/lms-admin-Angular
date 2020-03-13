@@ -35,6 +35,7 @@ export class BranchTableComponent implements OnInit {
 
   save() {
     let branches = [...this.branches];
+
     if (this.newBranch) branches.push(this.branch);
     else branches[this.branches.indexOf(this.selectedBranch)] = this.branch;
 
@@ -52,11 +53,11 @@ export class BranchTableComponent implements OnInit {
 
   onRowSelect(event) {
     this.newBranch = false;
-    this.branch = this.cloneCar(event.data);
+    this.branch = this.cloneBranch(event.data);
     this.displayDialog = true;
   }
 
-  cloneCar(c: Branch): Branch {
+  cloneBranch(c: Branch): Branch {
     let branch = {};
     for (let prop in c) {
       branch[prop] = c[prop];
