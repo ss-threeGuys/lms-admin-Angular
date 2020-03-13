@@ -36,16 +36,24 @@ export class BranchTableComponent implements OnInit {
   save() {
     let branches = [...this.branches];
 
-    if (this.newBranch) branches.push(this.branch);
-    else branches[this.branches.indexOf(this.selectedBranch)] = this.branch;
-
-    this.branches = branches;
-    this.branch = null;
-    this.displayDialog = false;
+    if (this.newBranch) {
+      this.branchService.createBranch(this.branch).then(branch => {
+        branches.push(this.branch);
+        this.branches = branches;
+        this.branch = null;
+        this.displayDialog = false;
+      });
+    } else {
+      this.branchService.updateBranch(this.branch).then(() => {
+        branches[this.branches.indexOf(this.selectedBranch)] = this.branch;
+        this.branches = branches;
+        this.branch = null;
+        this.displayDialog = false;
+      });
+    }
   }
 
   delete() {
-    console.log(this.branch);
     this.branchService.deleteBranch(this.branch).then(() => {
       let index = this.branches.indexOf(this.selectedBranch);
       this.branches = this.branches.filter((val, i) => i != index);

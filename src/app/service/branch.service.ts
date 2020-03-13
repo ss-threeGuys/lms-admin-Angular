@@ -16,6 +16,19 @@ export class BranchService {
       .then(data => data);
   }
 
+  createBranch(branch) {
+    return this.http
+      .post<Branch>("http://localhost:3000/admin/branches", branch)
+      .toPromise()
+      .then(data => data);
+  }
+
+  updateBranch(branch) {
+    return this.http
+      .put(`http://localhost:3000/admin/branches/${branch._id}`, branch)
+      .toPromise();
+  }
+
   deleteBranch(branch) {
     return this.http
       .delete(`http://localhost:3000/admin/branches/${branch._id}`)
