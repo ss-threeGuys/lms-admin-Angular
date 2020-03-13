@@ -45,10 +45,13 @@ export class BranchTableComponent implements OnInit {
   }
 
   delete() {
-    let index = this.branches.indexOf(this.selectedBranch);
-    this.branches = this.branches.filter((val, i) => i != index);
-    this.branch = null;
-    this.displayDialog = false;
+    console.log(this.branch);
+    this.branchService.deleteBranch(this.branch).then(() => {
+      let index = this.branches.indexOf(this.selectedBranch);
+      this.branches = this.branches.filter((val, i) => i != index);
+      this.branch = null;
+      this.displayDialog = false;
+    });
   }
 
   onRowSelect(event) {

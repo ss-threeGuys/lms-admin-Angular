@@ -15,4 +15,10 @@ export class BranchService {
       .then(res => <Branch[]>res)
       .then(data => data);
   }
+
+  deleteBranch(branch) {
+    return this.http
+      .delete(`http://localhost:3000/admin/branches/${branch._id}`)
+      .toPromise();
+  }
 }
