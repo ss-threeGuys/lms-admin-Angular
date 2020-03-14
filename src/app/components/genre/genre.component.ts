@@ -56,6 +56,7 @@ export class GenreComponent implements OnInit {
 
   delete() {
     this.genreService.deleteGenre(this.genre).then(() => {
+      console.log(this.genres);
       let index = this.genres.indexOf(this.selectedGenre);
       this.genres = this.genres.filter((_, i) => i != index);
       this.genre = null;
