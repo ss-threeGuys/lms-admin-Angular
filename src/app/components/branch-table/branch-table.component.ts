@@ -38,7 +38,7 @@ export class BranchTableComponent implements OnInit {
 
     if (this.newBranch) {
       this.branchService.createBranch(this.branch).then(branch => {
-        branches.push(this.branch);
+        branches.push(branch);
         this.branches = branches;
         this.branch = null;
         this.displayDialog = false;
