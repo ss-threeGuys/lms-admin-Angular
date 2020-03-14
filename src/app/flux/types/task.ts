@@ -1,7 +1,7 @@
 export enum Task {
-    INIT,
-    CREATE,
-    RETRIEVE,
-    UPDATE,
-    DELETE 
+    INIT = 'INIT',
+    CREATE = 'CREATE',
+    RETRIEVE = 'RETRIEVE',
+    UPDATE = 'UPDATE',
+    DELETE = 'DELETE'
 }

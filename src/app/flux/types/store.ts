@@ -1,8 +1,8 @@
 export enum StoreState {
-    INIT, 
-    PENDING, 
-    SUCCESS, 
-    ERROR
+    INIT = 'INIT', 
+    PENDING = 'PENDING', 
+    SUCCESS = 'SUCCESS', 
+    ERROR = 'ERROR'
 }
 
 export enum StoreEvent {
