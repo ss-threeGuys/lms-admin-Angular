@@ -13,9 +13,11 @@ import { FormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { BranchTableComponent } from "./components/branch-table/branch-table.component";
 import { BranchService } from "./service/branch.service";
+import { GenreComponent } from './components/genre/genre.component';
+import { GenreService } from './service/genre.service';
 
 @NgModule({
-  declarations: [AppComponent, AuthorComponent, BranchTableComponent],
+  declarations: [AppComponent, AuthorComponent, BranchTableComponent, GenreComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -27,7 +29,7 @@ import { BranchService } from "./service/branch.service";
     DialogModule,
     ButtonModule
   ],
-  providers: [AuthorService, BranchService],
+  providers: [AuthorService, BranchService, GenreService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
