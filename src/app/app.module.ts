@@ -11,11 +11,13 @@ import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PublisherComponent } from './publisher/component/publisher.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AuthorComponent
+    AuthorComponent,
+    PublisherComponent
   ],
   imports: [
     BrowserModule,
