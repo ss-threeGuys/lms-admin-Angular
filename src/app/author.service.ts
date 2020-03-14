@@ -23,7 +23,7 @@ export class AuthorService {
 
   updateAuthor(author) {
     return this.http
-      .put("http://localhost:3000/admin/authors", author)
+      .put(`http://localhost:3000/admin/authors/${author._id}`, author)
       .toPromise();
   }
 
