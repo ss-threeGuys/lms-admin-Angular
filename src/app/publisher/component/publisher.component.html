@@ -1,0 +1,66 @@
+<p-table [columns]="componentColumnMap" [value]="componentState" selectionMode="single" [(selection)]="selectedAuthor"
+  (onRowSelect)="onRowSelect($event)" [paginator]="false" [rows]="15">
+  <ng-template pTemplate="caption">
+    List of {{componentName}}
+  </ng-template>
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+        {{col.header}}
+        <p-sortIcon [field]="col.field"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-columns="columns">
+    <tr [pSelectableRow]="rowData">
+      <td style="text-align: center" *ngFor="let col of columns">
+        {{rowData[col.field]}}
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="summary" let-rowData>
+    <div style="text-align:left">
+      <button type="button" pButton icon="pi pi-plus" (click)="onAdd()" label="Add"></button>
+    </div>
+  </ng-template>
+</p-table>
+
+<p-dialog header="{{componentName}} Details" [(visible)]="modalDialogShow" [focusOnShow]="false" [responsive]="true"
+  showEffect="fade" [modal]="true" [style]="{width: '300px'}">
+  <div class="ui-g ui-fluid" *ngIf="mutable">
+    
+    <div class="ui-g-12">
+      <div class="ui-g-4">
+        <label for="name">Name</label>
+      </div>
+      <div class="ui-g-8">
+        <input pInputText id="name" [(ngModel)]="mutable.name" autofocus />
+      </div>
+    </div>
+
+    <div class="ui-g-12">
+      <div class="ui-g-4">
+        <label for="address">Address</label>
+      </div>
+      <div class="ui-g-8">
+        <input pInputText id="address" [(ngModel)]="mutable.address" autofocus />
+      </div>
+    </div>
+
+    <div class="ui-g-12">
+      <div class="ui-g-4">
+        <label for="phone">Phone</label>
+      </div>
+      <div class="ui-g-8">
+        <input pInputText id="phone" [(ngModel)]="mutable.phone" autofocus />
+      </div>
+    </div>
+
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" pButton icon="pi pi-times" (click)="onDelete()" label="Delete"></button>
+      <button type="button" pButton icon="pi pi-check" (click)="onSave()" label="Save"></button>
+    </div>
+  </p-footer>
+</p-dialog>
