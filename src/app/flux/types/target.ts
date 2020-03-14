@@ -1,9 +1,9 @@
 export enum Target {
-    INIT,
-    BOOK,
-    PUBLISHER,
-    AUTHOR,
-    GENRE,
-    BRANCH,
-    BORROWER
+    INIT = 'INIT',
+    BOOK = 'BOOK',
+    PUBLISHER = 'PUBLISHER',
+    AUTHOR = 'AUTHOR',
+    GENRE = 'GENRE',
+    BRANCH = 'BRANCH',
+    BORROWER = 'BORROWER'
 }

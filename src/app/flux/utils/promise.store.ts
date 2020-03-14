@@ -1,5 +1,5 @@
 import {EventEmitter} from 'events';
-import appDispatcher, { AppDispatcher } from '../dispatcher';
+import appDispatcher, { AppDispatcher } from '../appdispatcher';
 import { Target } from '../types/target';
 import { Task } from '../types/task';
 import { Action, ActionState } from '../types/action';
@@ -8,30 +8,38 @@ import { StoreState, StoreEvent } from '../types/store';
 export default class PromiseStore<TPayload> {
 
     protected target: Target = Target.INIT;
-    protected task: Task = Task.INIT;
+
     protected dispatcher: AppDispatcher = appDispatcher;
 
-    private payload : TPayload = null;
+    payload : TPayload = null;
+
     private state: StoreState = StoreState.INIT;
     private storeEventEmitter :  EventEmitter = new EventEmitter();
     private filterFunction : (action:Action) => boolean ;
     private mapFunction : (action:Action) => TPayload ;
+    private mutationFunction : (store:PromiseStore<TPayload>, action:Action, mapFunction: (action:Action) => TPayload) => void;
 
-    constructor(target:Target, task:Task, dispatcher: AppDispatcher=appDispatcher) {
+    constructor(target:Target, dispatcher: AppDispatcher=appDispatcher) {
+
+        this.target = target;
 
         this.filterFunction = (action) => {
 
             if (action.target !== this.target)
                 return false;
 
-            if (action.task !== this.task)
-                return false;
-
             return true;
         };
 
         this.mapFunction = (action) => {
+            //console.log('Store', 'onPayload');
             return action.payload;
+        };
+
+        this.mutationFunction = (store, action, mapFunction) => {
+            if (action.task === Task.RETRIEVE) {
+                store.payload = mapFunction(action);
+            }
         };
 
         this.dispatcher.register( (action) => this.actionHandler(action) );
@@ -43,6 +51,7 @@ export default class PromiseStore<TPayload> {
     }
 
     on(event: string | symbol, listener: (...args: any[]) => void) {
+        //console.log('Listener registered');
         this.storeEventEmitter.on(event, listener);
     }
 
@@ -58,21 +67,28 @@ export default class PromiseStore<TPayload> {
         this.mapFunction = mapFunction.bind(this);
     }
 
+    set mutation (mutationFunction : (store:PromiseStore<TPayload>, action:Action, mapFunction: (action:Action) => TPayload) => void) {
+        this.mutationFunction = mutationFunction.bind(this);
+    }
+
     private actionHandler(action:Action) {
 
-        if (!this.filterFunction(action))
+        if (!this.filterFunction(action)) {
+            //console.log('Not my job!', action.target, this.target)
             return false;
+        }
 
         switch(action.state) {
             case ActionState.STARTED:
-                this.payload = null;
                 this.state = StoreState.PENDING;
+                //console.log('Store',StoreEvent.CHANGE, action);
                 this.storeEventEmitter.emit(StoreEvent.CHANGE, action);
                 return;
 
             case ActionState.FULFILLED:
-                this.payload = this.mapFunction(action);
+                this.mutationFunction(this, action, this.mapFunction);
                 this.state = StoreState.SUCCESS;
+                //console.log('Store',StoreEvent.CHANGE, action);
                 this.storeEventEmitter.emit(StoreEvent.CHANGE, action);
                 return;
 
