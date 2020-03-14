@@ -15,9 +15,11 @@ import { BranchTableComponent } from "./components/branch-table/branch-table.com
 import { BranchService } from "./service/branch.service";
 import { GenreComponent } from './components/genre/genre.component';
 import { GenreService } from './service/genre.service';
+import { BorrowerComponent } from './components/borrower/borrower.component';
+import { BorrowerService } from './service/borrower.service';
 
 @NgModule({
-  declarations: [AppComponent, AuthorComponent, BranchTableComponent, GenreComponent],
+  declarations: [AppComponent, AuthorComponent, BranchTableComponent, GenreComponent, BorrowerComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -29,7 +31,7 @@ import { GenreService } from './service/genre.service';
     DialogModule,
     ButtonModule
   ],
-  providers: [AuthorService, BranchService, GenreService],
+  providers: [AuthorService, BranchService, GenreService, BorrowerService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -14,7 +14,6 @@ export class GenreService {
       .toPromise()
       .then(res => <Genre[]>res)
       .then(data => {
-        console.log(data);
         return data;
       });
   }

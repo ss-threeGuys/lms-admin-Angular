@@ -1,12 +1,12 @@
-<p-table #dt [columns]="cols" [value]="genres" selectionMode="single" [(selection)]="selectedGenre"
+<p-table #dt [columns]="cols" [value]="borrowers" selectionMode="single" [(selection)]="selectedBorrower"
   (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
   <ng-template pTemplate="caption">
-    List of Genres
+    List of Borrowers
   </ng-template>
   <ng-template pTemplate="caption">
     <div style="text-align: right">
       <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
-      <input type="text" pInputText size="30" placeholder="genre search"
+      <input type="text" pInputText size="30" placeholder="borrower search"
         (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
     </div>
   </ng-template>
@@ -32,21 +32,37 @@
   </ng-template>
 </p-table>
 
-<p-dialog header="Genre Details" [(visible)]="displayDialog" [focusOnShow]="false" [responsive]="true" showEffect="fade"
+<p-dialog header="Borrower Details" [(visible)]="displayDialog" [focusOnShow]="false" [responsive]="true" showEffect="fade"
   [modal]="true" [style]="{width: '300px'}">
-  <div class="ui-g ui-fluid" *ngIf="genre">
+  <div class="ui-g ui-fluid" *ngIf="borrower">
     <div class="ui-g-12">
       <div class="ui-g-4">
         <label for="name">Name</label>
       </div>
       <div class="ui-g-8">
-        <input pInputText id="name" [(ngModel)]="genre.name" autofocus />
+        <input pInputText id="name" [(ngModel)]="borrower.name" autofocus />
+      </div>
+    </div>
+    <div class="ui-g-12">
+      <div class="ui-g-4">
+        <label for="address">Address</label>
+      </div>
+      <div class="ui-g-8">
+        <input pInputText id="address" [(ngModel)]="borrower.address" autofocus />
+      </div>
+    </div>
+    <div class="ui-g-12">
+      <div class="ui-g-4">
+        <label for="phone">Phone Number</label>
+      </div>
+      <div class="ui-g-8">
+        <input pInputText id="phone" [(ngModel)]="borrower.phone" autofocus />
       </div>
     </div>
   </div>
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button *ngIf="!newGenre" type="button" pButton icon="pi pi-times" (click)="delete()" label="Delete"></button>
+      <button *ngIf="!newBorrower" type="button" pButton icon="pi pi-times" (click)="delete()" label="Delete"></button>
       <button type="button" pButton icon="pi pi-check" (click)="save()" label="Save"></button>
     </div>
   </p-footer>
