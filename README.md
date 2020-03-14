@@ -13,6 +13,8 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 ## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+##### Dryrun
+Add `-d` flag to end of command for dryrun. `ng generate component component-name -d` Dryrun shows a command’s output without actually having the command execute and create files or modify project.
 
 ## Build
 
