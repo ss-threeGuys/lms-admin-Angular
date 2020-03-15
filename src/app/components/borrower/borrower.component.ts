@@ -23,7 +23,9 @@ export class BorrowerComponent implements OnInit {
       return (this.borrowers = borrowers);
     });
     this.cols = [
-      { field: 'name', header: "Name"}
+      { field: 'name', header: "Name"},
+      { field: 'address', header: 'Address'},
+      { field: 'phone', header: 'Phone'}
     ];
   }
 
