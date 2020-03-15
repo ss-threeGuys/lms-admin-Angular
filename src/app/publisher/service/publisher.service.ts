@@ -18,9 +18,11 @@ const crudUrls = {
 })
 export class PublisherService {
 
-  constructor() { }
+    constructor() { }
 
-  private autoId = 1;
+    private autoId = 1;
+
+
     create (publisher: Publisher) {
 
         const promise = axios.get(crudUrls.create)
