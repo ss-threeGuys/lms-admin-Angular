@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 
-import { TabMenuModule } from "primeng/tabmenu";
 import { MenuItem } from "primeng/api";
 @Component({
   selector: "app-admin-menu",
@@ -9,15 +8,16 @@ import { MenuItem } from "primeng/api";
 })
 export class AdminMenuComponent implements OnInit {
   items: MenuItem[];
-  activeItem: MenuItem;
 
   ngOnInit() {
+    const baseRoute: string = "admin/";
     this.items = [
-      { label: "Home", icon: "pi pi-fw pi-home" },
-      { label: "Calendar", icon: "pi pi-fw pi-calendar" },
-      { label: "Edit", icon: "pi pi-fw pi-pencil" },
-      { label: "Documentation", icon: "pi pi-fw pi-file" },
-      { label: "Settings", icon: "pi pi-fw pi-cog" }
+      { label: "Author", routerLink: [`${baseRoute}authors`] },
+      { label: "Book", routerLink: [`${baseRoute}books`] },
+      { label: "Genre", routerLink: [`${baseRoute}genres`] },
+      { label: "Publisher", routerLink: [`${baseRoute}publishers`] },
+      { label: "Branch", routerLink: [`${baseRoute}branches`] },
+      { label: "Borrower", routerLink: [`${baseRoute}borrowers`] }
     ];
   }
 }
