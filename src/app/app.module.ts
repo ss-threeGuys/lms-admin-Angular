@@ -15,12 +15,21 @@ import { BranchTableComponent } from "./components/branch-table/branch-table.com
 import { BranchService } from "./service/branch.service";
 import { GenreComponent } from './components/genre/genre.component';
 import { GenreService } from './service/genre.service';
+import { AdminMenuComponent } from "./components/admin-menu/admin-menu.component";
+import { MenuModule } from "primeng/menu";
+import { TabMenuModule } from "primeng/tabmenu";
 import { PublisherService} from './service/publisher.service';
 import { BookComponent } from './components/book/book.component';
 import {MultiSelectModule} from 'primeng/multiselect';
 
 @NgModule({
-  declarations: [AppComponent, AuthorComponent, BookComponent, BranchTableComponent, GenreComponent],
+  declarations: [
+    AppComponent, 
+    AuthorComponent, 
+    BookComponent, 
+    BranchTableComponent, 
+    GenreComponent, 
+    AdminMenuComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -31,7 +40,9 @@ import {MultiSelectModule} from 'primeng/multiselect';
     InputTextModule,
     DialogModule,
     ButtonModule,
-    MultiSelectModule
+    MultiSelectModule,
+    MenuModule,
+    TabMenuModule
   ],
   providers: [AuthorService, BranchService, GenreService, PublisherService],
   bootstrap: [AppComponent]
