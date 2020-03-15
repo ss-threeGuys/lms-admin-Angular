@@ -21,6 +21,8 @@ import { TabMenuModule } from "primeng/tabmenu";
 import { PublisherService} from './service/publisher.service';
 import { BookComponent } from './components/book/book.component';
 import {MultiSelectModule} from 'primeng/multiselect';
+import { BorrowerComponent } from './components/borrower/borrower.component';
+import { BorrowerService } from './service/borrower.service';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,7 @@ import {MultiSelectModule} from 'primeng/multiselect';
     AuthorComponent, 
     BookComponent, 
     BranchTableComponent, 
+    BorrowerComponent,
     GenreComponent, 
     AdminMenuComponent],
   imports: [
@@ -44,7 +47,7 @@ import {MultiSelectModule} from 'primeng/multiselect';
     MenuModule,
     TabMenuModule
   ],
-  providers: [AuthorService, BranchService, GenreService, PublisherService],
+  providers: [AuthorService, BranchService, GenreService, PublisherService, BorrowerService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
