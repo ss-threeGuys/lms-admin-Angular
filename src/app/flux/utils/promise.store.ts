@@ -72,7 +72,7 @@ export default class PromiseStore<TPayload> {
     }
 
     private actionHandler(action:Action) {
-
+        console.log(action);
         if (!this.filterFunction(action)) {
             //console.log('Not my job!', action.target, this.target)
             return false;
