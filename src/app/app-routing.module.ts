@@ -4,11 +4,13 @@ import { AuthorComponent } from "./author/author.component";
 import { BranchTableComponent } from "./components/branch-table/branch-table.component";
 import { GenreComponent } from './components/genre/genre.component';
 import { BorrowerComponent } from './components/borrower/borrower.component';
+
 const routes: Routes = [
-  { path: "admin/author", component: AuthorComponent },
+  { path: "admin/authors", component: AuthorComponent },
   { path: "admin/branches", component: BranchTableComponent },
   { path: "admin/genres", component: GenreComponent },
   { path: "admin/borrowers", component: BorrowerComponent}
+
 ];
 
 @NgModule({
