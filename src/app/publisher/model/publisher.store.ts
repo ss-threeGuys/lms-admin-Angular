@@ -2,8 +2,12 @@ import PromiseStore from "src/app/flux/utils/promise.store";
 import Publisher from './publisher';
 import { Target } from 'src/app/flux/types/target';
 import { Task } from 'src/app/flux/types/task';
+import { Injectable } from '@angular/core';
 
-class PublisherStore extends PromiseStore<Publisher[]> {
+@Injectable({
+    providedIn: 'root'
+  })
+export class PublisherStore extends PromiseStore<Publisher[]> {
 
     constructor() {
         super(Target.PUBLISHER);
