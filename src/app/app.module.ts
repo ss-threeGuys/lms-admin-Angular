@@ -13,11 +13,19 @@ import { FormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { BranchTableComponent } from "./components/branch-table/branch-table.component";
 import { BranchService } from "./service/branch.service";
-import { GenreComponent } from './components/genre/genre.component';
-import { GenreService } from './service/genre.service';
-
+import { GenreComponent } from "./components/genre/genre.component";
+import { GenreService } from "./service/genre.service";
+import { AdminMenuComponent } from "./components/admin-menu/admin-menu.component";
+import { MenuModule } from "primeng/menu";
+import { TabMenuModule } from "primeng/tabmenu";
 @NgModule({
-  declarations: [AppComponent, AuthorComponent, BranchTableComponent, GenreComponent],
+  declarations: [
+    AppComponent,
+    AuthorComponent,
+    BranchTableComponent,
+    GenreComponent,
+    AdminMenuComponent
+  ],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -27,7 +35,9 @@ import { GenreService } from './service/genre.service';
     TableModule,
     InputTextModule,
     DialogModule,
-    ButtonModule
+    ButtonModule,
+    MenuModule,
+    TabMenuModule
   ],
   providers: [AuthorService, BranchService, GenreService],
   bootstrap: [AppComponent]
