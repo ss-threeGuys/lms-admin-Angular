@@ -100,7 +100,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
     }
 
     protected onInputChange() {
-
+        //console.log('Input Changed');
         for (let col of this._pColumnMap) {
             if (col.validator !== undefined) {
                 if (!col.validator(this._inputPayload[col.field])) {

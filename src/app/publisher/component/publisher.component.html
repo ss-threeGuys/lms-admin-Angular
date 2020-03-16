@@ -40,7 +40,7 @@
         </div>
         <div class="ui-g-8">
           <input pInputText [id]="col.field" [(ngModel)]="_inputPayload[col.field]" autofocus
-            (change)="onInputChange()"
+            (keyup)="onInputChange()"
           />
         </div>
       </div>
