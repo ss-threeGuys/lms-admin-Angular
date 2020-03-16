@@ -1,7 +1,11 @@
-<p-table [columns]="_pColumnMap" [value]="_pPayload" selectionMode="single" [(selection)]="selectedAuthor"
-  (onRowSelect)="onRowSelect($event)" [paginator]="false" [rows]="15">
+<p-table #dt [columns]="_pColumnMap" [value]="_pPayload" selectionMode="single" [(selection)]="selectedAuthor"
+  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
   <ng-template pTemplate="caption">
-    List of {{_componentName}}
+    <div style="text-align: right">
+      <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
+      <input type="text" pInputText size="30" placeholder="{{_componentName}} search"
+        (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+    </div>
   </ng-template>
   <ng-template pTemplate="header" let-columns>
     <tr>
@@ -25,7 +29,7 @@
   </ng-template>
 </p-table>
 
-<p-dialog header="{{componentName}} Details" [(visible)]="pDialogShow" [focusOnShow]="false" [responsive]="true"
+<p-dialog header="{{componentName}} Details" [(visible)]="pDialogShow" [focusOnShow]="false"
   showEffect="fade" [modal]="true" [style]="{width: '300px'}">
   <div class="ui-g ui-fluid" *ngIf="_inputPayload">
 

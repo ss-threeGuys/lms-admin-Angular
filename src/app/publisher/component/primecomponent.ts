@@ -5,6 +5,7 @@ import PromiseStore from 'src/app/flux/utils/promise.store';
 import { Action, ActionState } from 'src/app/flux/types/action';
 import { Task } from 'src/app/flux/types/task';
 import { StoreEvent } from 'src/app/flux/types/store';
+import { ViewChild, ElementRef } from '@angular/core';
 
 export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
@@ -38,11 +39,25 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
     private _pValidInput: boolean = false;
 
+    private _sortField: string = null;
+
+    private _sortOrder: number = 0;
+
     private readonly _service: CrudService<TPayload>;
 
     private readonly _store: PromiseStore<TPayload>;
 
     private readonly _storeMapFunction: (payload: any) => any;
+
+    @ViewChild('dt') private tableElement: any;
+
+    get sortField() {
+        return this._sortField;
+    }
+
+    get sortOrder() {
+        return this._sortOrder;
+    }
 
     constructor(
         name: string,
@@ -74,6 +89,14 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
         this._store.on(StoreEvent.CHANGE, this.storeListener.bind(this));
         this.emitEvent(ComponentEvent.RETRIEVE_REQUEST);
         this.primeInit();
+    }
+
+    protected ngAfterViewInit() {
+        this.tableElement.onSort.subscribe(data => {
+            //console.log(data);
+            this._sortField = data.field;
+            this._sortOrder = data.order;
+        });
     }
 
     protected onInputChange() {
@@ -126,7 +149,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
     */
 
     protected onEventRetrieveRequest() {
-        this.serviceRetrieve();
+        this.serviceRetrieve(this._sortField, this._sortOrder);
     }
 
     protected onEventRetrieveDone(event: ComponentEvent, payload: any) {
@@ -233,8 +256,8 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
         this._inputPayload = inputPayload;
     }
 
-    protected serviceRetrieve() {
-        this._service.retrieve();
+    protected serviceRetrieve(sortField: string, sortOrder: number) {
+        this._service.retrieve(sortField, sortOrder);
     }
 
     protected serviceCreate(payload: any) {

@@ -55,9 +55,16 @@ export class PublisherService {
 
     }
 
-    retrieve() {
+    retrieve(sortField:string, sortOrder:number) {
 
-        const promise = axios.get(crudUrls.retrieve)
+        const promise = axios({
+            method: 'get',
+            url: crudUrls.retrieve,
+            params: {
+                sortField: sortField,
+                sortOrder: sortOrder
+            }
+          })
             .then(
                 (response) => {
                     return new Promise(

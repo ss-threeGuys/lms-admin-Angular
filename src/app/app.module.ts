@@ -18,12 +18,12 @@ import { GenreService } from "./service/genre.service";
 import { AdminMenuComponent } from "./components/admin-menu/admin-menu.component";
 import { MenuModule } from "primeng/menu";
 import { TabMenuModule } from "primeng/tabmenu";
-import { PublisherService } from "./service/publisher.service";
 import { BookComponent } from "./components/book/book.component";
 import { MultiSelectModule } from "primeng/multiselect";
 import { BorrowerComponent } from "./components/borrower/borrower.component";
 import { BorrowerService } from "./service/borrower.service";
 import { PublisherComponent } from "./publisher/component/publisher.component";
+import { PublisherService } from './publisher/service/publisher.service';
 
 @NgModule({
   declarations: [
