@@ -56,7 +56,8 @@
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
       <button *ngIf="!newBranch" type="button" pButton icon="pi pi-times" (click)="delete()" label="Delete"></button>
-      <button type="button" pButton icon="pi pi-check" (click)="save()" label="Save"></button>
+      <button type="button" pButton icon="pi pi-check" (click)="save()" [disabled]="!(branch?.branchName)"
+        label="Save"></button>
     </div>
   </p-footer>
 </p-dialog>
