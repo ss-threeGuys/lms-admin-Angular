@@ -131,6 +131,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
     }
 
     protected onSaveButtonClick() {
+        
         if (this.event === ComponentEvent.CREATE_WAIT_INPUT) 
             this.emitEvent(ComponentEvent.CREATE_INPUT, this._inputPayload);
         else if (this.event === ComponentEvent.UPDATE_WAIT_INPUT) 
@@ -170,6 +171,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
         this._pSaveEnabled = true;
         this._saveButtonLabel = 'Create';
         this.pDialogShow = true;
+        this._pValidInput = false;
         this.emitEvent(ComponentEvent.CREATE_WAIT_INPUT);
     }
 
@@ -193,6 +195,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
         this._pSaveButtonShow = true;
         this._saveButtonLabel = 'Update';
         this.pDialogShow = true;
+        this._pValidInput = false;
         this.emitEvent(ComponentEvent.UPDATE_WAIT_INPUT);
     }
 
