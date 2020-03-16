@@ -1,0 +1,1 @@
+export let NotBlank =  (x) => {x.toString().trim() != ''; };
