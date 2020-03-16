@@ -13,26 +13,29 @@ import { FormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { BranchTableComponent } from "./components/branch-table/branch-table.component";
 import { BranchService } from "./service/branch.service";
-import { GenreComponent } from './components/genre/genre.component';
-import { GenreService } from './service/genre.service';
+import { GenreComponent } from "./components/genre/genre.component";
+import { GenreService } from "./service/genre.service";
 import { AdminMenuComponent } from "./components/admin-menu/admin-menu.component";
 import { MenuModule } from "primeng/menu";
 import { TabMenuModule } from "primeng/tabmenu";
-import { PublisherService} from './service/publisher.service';
-import { BookComponent } from './components/book/book.component';
-import {MultiSelectModule} from 'primeng/multiselect';
-import { BorrowerComponent } from './components/borrower/borrower.component';
-import { BorrowerService } from './service/borrower.service';
+import { BookComponent } from "./components/book/book.component";
+import { MultiSelectModule } from "primeng/multiselect";
+import { BorrowerComponent } from "./components/borrower/borrower.component";
+import { BorrowerService } from "./service/borrower.service";
+import { PublisherComponent } from "./publisher/component/publisher.component";
+import { PublisherService } from './publisher/service/publisher.service';
 
 @NgModule({
   declarations: [
-    AppComponent, 
-    AuthorComponent, 
-    BookComponent, 
-    BranchTableComponent, 
+    AppComponent,
+    AuthorComponent,
+    BookComponent,
+    BranchTableComponent,
     BorrowerComponent,
-    GenreComponent, 
-    AdminMenuComponent],
+    GenreComponent,
+    AdminMenuComponent,
+    PublisherComponent
+  ],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -47,7 +50,13 @@ import { BorrowerService } from './service/borrower.service';
     MenuModule,
     TabMenuModule
   ],
-  providers: [AuthorService, BranchService, GenreService, PublisherService, BorrowerService],
+  providers: [
+    AuthorService,
+    BranchService,
+    GenreService,
+    PublisherService,
+    BorrowerService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

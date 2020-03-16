@@ -1,0 +1,57 @@
+<p-table #dt [columns]="_pColumnMap" [value]="_pPayload" selectionMode="single" [(selection)]="selectedAuthor"
+  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15" 
+  [sortField]="_pColumnMap[0]?.field" [sortOrder]="1">
+  <ng-template pTemplate="caption">
+    <div style="text-align: right">
+      <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
+      <input type="text" pInputText size="30" placeholder="{{_componentName}} search"
+        (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+        {{col.header}}
+        <p-sortIcon [field]="col.field"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-columns="columns">
+    <tr [pSelectableRow]="rowData" >
+      <td title="id={{rowData['_id']}}" style="text-align: left" *ngFor="let col of columns">
+        {{rowData[col.field]}}
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="summary" let-rowData>
+    <div style="text-align:left">
+      <button type="button" *ngIf="_pAddButtonShow" pButton icon="pi pi-plus" (click)="onAddButtonClick()" label="{{_addButtonLabel}}"  [disabled]="!_pAddEnabled"></button>
+    </div>
+  </ng-template>
+</p-table>
+
+<p-dialog header="{{componentName}} Details" [(visible)]="pDialogShow" [focusOnShow]="false"
+  showEffect="fade" [modal]="true" [style]="{width: '300px'}">
+  <div class="ui-g ui-fluid" *ngIf="_inputPayload">
+
+    <div *ngFor="let col of _pColumnMap">
+      <div class="ui-g-12">
+        <div class="ui-g-4">
+          <label for="name">{{col.header}}</label>
+        </div>
+        <div class="ui-g-8">
+          <input pInputText [id]="col.field" [(ngModel)]="_inputPayload[col.field]" autofocus
+            (keyup)="onInputChange()"
+          />
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" *ngIf="_pDeleteButtonShow" pButton icon="pi pi-times" (click)="onDeleteButtonClick()" label="{{_deleteButtonLabel}}" [disabled]="!_pDeleteEnabled"></button>
+      <button type="button" *ngIf="_pSaveButtonShow" pButton icon="pi pi-check" (click)="onSaveButtonClick()" label="{{_saveButtonLabel}}"  [disabled]="!_pSaveEnabled || !_pValidInput"></button>
+    </div>
+  </p-footer>
+</p-dialog>
