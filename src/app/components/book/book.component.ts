@@ -57,13 +57,7 @@ export class BookComponent implements OnInit {
 
   allPublishers: SelectItem[];
 
-  selectedAuthors: string[] = [];
-
-  selectedGenres: string[] = [];
-
-  selectedPublisher: string;
-
-  constructor(
+ constructor(
     private bookService: BookService,
     private authorService: AuthorService,
     private genreService: GenreService,
@@ -98,7 +92,7 @@ export class BookComponent implements OnInit {
       let genreNames = book.genres.map(genre => genre.name).join(", ")
       let genreIds = book.genres.map(genre => genre._id)
       let publisherName = book.publisher ? book.publisher.name : null;
-      let publisherId = book.publisher ? book.publisher.name : null;
+      let publisherId = book.publisher ? [book.publisher._id] : null;
 
       this.outputBooks.push(
         new BooksOutput(
@@ -148,7 +142,7 @@ export class BookComponent implements OnInit {
     let books: BooksOutput[] = [...this.outputBooks];
     if (this.newBook) {
       console.log("this.book" + JSON.stringify(this.book));
-      console.log("selectedAuthors" + this.selectedAuthors);
+     
       this.bookService.createBook(this.book)
         .then(book => {
           console.log("book after create" + JSON.stringify(book))
@@ -157,7 +151,7 @@ export class BookComponent implements OnInit {
           let genreNames = book.genres.map(genre => genre.name).join(", ")
           let genreIds = book.genres.map(genre => genre._id)
           let publisherName = book.publisher ? book.publisher.name : null;
-          let publisherId = book.publisher ? book.publisher.name : null;
+          let publisherId = book.publisher ? [book.publisher._id] : null;
           books.push(new BooksOutput(book._id, book.title, authorNames, authorIds, genreNames, genreIds, publisherName, publisherId));
           this.outputBooks = books;
           this.book = null;
@@ -207,7 +201,7 @@ export class BookComponent implements OnInit {
     book.title = c.title;
     book.authors = c.authorIds;
     book.genres = c.genreIds;
-    book.publisher = c.publisherId;
+    book.publisher = c.publisherId ? c.publisherId : [];
     return book;
   }
 

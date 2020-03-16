@@ -69,7 +69,7 @@
         <label for="name">Publisher</label>
       </div>
       <div class="ui-g-8 ui-select-choices">
-        <p-multiSelect [options]="allPublishers" [(ngModel)]="book.publisher">
+        <p-multiSelect [options]="allPublishers" [selectionLimit]="1" [(ngModel)]="book.publisher">
         </p-multiSelect>
       </div>
     </div>
