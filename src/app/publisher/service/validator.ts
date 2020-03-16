@@ -1,1 +1,1 @@
-export let NotBlank =  (x) => {x.toString().trim() != ''; };
+export let NotBlank =  (x:any):boolean => (x.toString().trim() != '');
