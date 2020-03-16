@@ -43,6 +43,12 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
     private _sortOrder: number = 0;
 
+    private _currentPage: number = 1;
+
+    private _pageSize: number = 10;
+
+    private _pageCount: number;
+
     private readonly _service: CrudService<TPayload>;
 
     private readonly _store: PromiseStore<TPayload>;
@@ -57,6 +63,30 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
     get sortOrder() {
         return this._sortOrder;
+    }
+
+    get currentPage() {
+        return this._currentPage;
+    }
+
+    set currentPage(currentPage:number) {
+        this.currentPage = currentPage;
+    }
+
+    get pageSize() {
+        return this._pageSize;
+    }
+
+    set pageSize(pageSize: number) {
+        this._pageSize = pageSize;
+    }
+
+    get pageCount() {
+        return this._pageCount;
+    }
+
+    set pageCount(pageCount: number) {
+        this._pageCount = pageCount;
     }
 
     constructor(
@@ -154,7 +184,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
     */
 
     protected onEventRetrieveRequest() {
-        this.serviceRetrieve(this._sortField, this._sortOrder);
+        this.serviceRetrieve(this._sortField, this._sortOrder, this._currentPage, this._pageSize);
     }
 
     protected onEventRetrieveDone(event: ComponentEvent, payload: any) {
@@ -263,8 +293,8 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
         this._inputPayload = inputPayload;
     }
 
-    protected serviceRetrieve(sortField: string, sortOrder: number) {
-        this._service.retrieve(sortField, sortOrder);
+    protected serviceRetrieve(sortField: string, sortOrder: number, currentPage:number, pageSize: number) {
+        this._service.retrieve(sortField, sortOrder, currentPage, pageSize);
     }
 
     protected serviceCreate(payload: any) {

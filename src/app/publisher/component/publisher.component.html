@@ -1,5 +1,5 @@
 <p-table #dt [columns]="_pColumnMap" [value]="_pPayload" selectionMode="single" [(selection)]="selectedAuthor"
-  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15" 
+  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="_pageSize" 
   [sortField]="_pColumnMap[0]?.field" [sortOrder]="1">
   <ng-template pTemplate="caption">
     <div style="text-align: right">
