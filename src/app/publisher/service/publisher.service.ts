@@ -6,10 +6,10 @@ import { Task } from 'src/app/flux/types/task';
 import axios from 'axios';
 
 const crudUrls = {
-    create:     'http://www.mocky.io/v2/5e6ce6272e000065000eea8d',
-    retrieve:   'http://www.mocky.io/v2/5e6ce4062e000057000eea8a',
-    update:     'http://www.mocky.io/v2/5e6ce76f2e000059000eea90',
-    delete:     'http://www.mocky.io/v2/5e6ce8d82e000059000eea99',
+    create:     'http://localhost:3000/admin/publishers',
+    retrieve:   'http://localhost:3000/admin/publishers',
+    update:     'http://localhost:3000/admin/publishers/:id',
+    delete:     'http://localhost:3000/admin/publishers/:id',
 };
 
 
@@ -25,7 +25,11 @@ export class PublisherService {
 
     create (publisher: Publisher) {
 
-        const promise = axios.get(crudUrls.create)
+        const promise = axios({
+            method: 'post',
+            url: crudUrls.create,
+            data: publisher
+          })
         .then(
             (response) => {
                 console.log(response.data);
@@ -75,7 +79,11 @@ export class PublisherService {
 
     update (publisher: Publisher) {
 
-        const promise = axios.get(crudUrls.update)
+        const promise = axios({
+            method: 'put',
+            url: crudUrls.update.replace(':id', publisher._id),
+            data: publisher
+          })
         .then(
             (response) => {
                 console.log(response.data);
@@ -102,7 +110,11 @@ export class PublisherService {
 
     delete (publisher: Publisher) {
 
-        const promise = axios.get(crudUrls.delete)
+        const promise = axios({
+            method: 'delete',
+            url: crudUrls.update.replace(':id', publisher._id),
+            data: publisher
+          })
         .then(
             (response) => {
                 console.log(response.data);
