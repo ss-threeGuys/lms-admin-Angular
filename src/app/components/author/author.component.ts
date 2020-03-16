@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthorService } from '../author.service';
-import { Author } from './domain/Author';
+import { AuthorService } from '../../service/author.service';
+import { Author } from '../../domain/author';
 
 export class PrimeAuthor implements Author {
   constructor(public name?) { }
