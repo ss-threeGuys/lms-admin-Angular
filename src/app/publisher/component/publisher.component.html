@@ -1,5 +1,6 @@
 <p-table #dt [columns]="_pColumnMap" [value]="_pPayload" selectionMode="single" [(selection)]="selectedAuthor"
-  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15" 
+  [sortField]="_pColumnMap[0]?.field" [sortOrder]="1">
   <ng-template pTemplate="caption">
     <div style="text-align: right">
       <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
@@ -17,7 +18,7 @@
   </ng-template>
   <ng-template pTemplate="body" let-rowData let-columns="columns">
     <tr [pSelectableRow]="rowData" >
-      <td title="{{rowData['_id']}}" style="text-align: center" *ngFor="let col of columns">
+      <td title="{{rowData['_id']}}" style="text-align: left" *ngFor="let col of columns">
         {{rowData[col.field]}}
       </td>
     </tr>

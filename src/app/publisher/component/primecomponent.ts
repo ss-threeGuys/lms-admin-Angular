@@ -39,7 +39,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
     private _pValidInput: boolean = false;
 
-    private _sortField: string = null;
+    private _sortField: string = "";
 
     private _sortOrder: number = 0;
 
@@ -77,6 +77,8 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
         this._pColumnMap = colsMap;
         this._service = service;
         this._store = store;
+        this._sortField = colsMap[0].field;
+        this._sortOrder = 1;
         this._storeMapFunction = storeMapFunction;
     }
 
