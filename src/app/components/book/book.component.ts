@@ -57,7 +57,7 @@ export class BookComponent implements OnInit {
 
   allPublishers: SelectItem[];
 
- constructor(
+  constructor(
     private bookService: BookService,
     private authorService: AuthorService,
     private genreService: GenreService,
@@ -142,7 +142,7 @@ export class BookComponent implements OnInit {
     let books: BooksOutput[] = [...this.outputBooks];
     if (this.newBook) {
       console.log("this.book" + JSON.stringify(this.book));
-     
+
       this.bookService.createBook(this.book)
         .then(book => {
           console.log("book after create" + JSON.stringify(book))
@@ -159,20 +159,20 @@ export class BookComponent implements OnInit {
         })
 
     } else {
-      
+
       this.bookService.updateBook(this.book)
         .then(() => {
-          setTimeout(() => {
-            this.outputBooks = [];
-            this.bookService.getBooks().then(_books => {
-              this.addBooksFromServiceToOutput(_books)
-              this.book = null;
-              this.displayDialog = false
+          this.outputBooks = [];
+          this.bookService.getBooks().then(_books => {
+            this.addBooksFromServiceToOutput(_books)
+            this.book = null;
+            this.displayDialog = false
           })
-       }, 750)
-    })
+        })
     }
   }
+
+
 
 
   delete() {
