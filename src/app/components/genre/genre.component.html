@@ -1,9 +1,14 @@
-
-
-<p-table [columns]="cols" [value]="authors" selectionMode="single" [(selection)]="selectedAuthor"
+<p-table #dt [columns]="cols" [value]="genres" selectionMode="single" [(selection)]="selectedGenre"
   (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
   <ng-template pTemplate="caption">
-    List of Authors
+    List of Genres
+  </ng-template>
+  <ng-template pTemplate="caption">
+    <div style="text-align: right">
+      <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
+      <input type="text" pInputText size="30" placeholder="genre search"
+        (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+    </div>
   </ng-template>
   <ng-template pTemplate="header" let-columns>
     <tr>
@@ -27,22 +32,22 @@
   </ng-template>
 </p-table>
 
-<p-dialog header="Author Details" [(visible)]="displayDialog" [focusOnShow]="false" [responsive]="true"
-  showEffect="fade" [modal]="true" [style]="{width: '300px'}">
-  <div class="ui-g ui-fluid" *ngIf="author">
+<p-dialog header="Genre Details" [(visible)]="displayDialog" [focusOnShow]="false" [responsive]="true" showEffect="fade"
+  [modal]="true" [style]="{width: '300px'}">
+  <div class="ui-g ui-fluid" *ngIf="genre">
     <div class="ui-g-12">
       <div class="ui-g-4">
         <label for="name">Name</label>
       </div>
       <div class="ui-g-8">
-        <input pInputText id="name" [(ngModel)]="author.name" autofocus />
+        <input pInputText id="name" [(ngModel)]="genre.name" autofocus />
       </div>
     </div>
   </div>
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button type="button" pButton icon="pi pi-times" (click)="delete()" label="Delete"></button>
-      <button type="button" pButton icon="pi pi-check" (click)="save()" label="Save"></button>
+      <button *ngIf="!newGenre" type="button" pButton icon="pi pi-times" (click)="delete()" label="Delete"></button>
+      <button type="button" [disabled]="!genre?.name" pButton icon="pi pi-check" (click)="save()" label="Save"></button>
     </div>
   </p-footer>
 </p-dialog>
