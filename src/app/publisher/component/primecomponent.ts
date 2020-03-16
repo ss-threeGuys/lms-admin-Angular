@@ -40,7 +40,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
     private readonly _service: CrudService<TPayload>;
 
-    private readonly _store: PromiseStore<TPayload[]>;
+    private readonly _store: PromiseStore<TPayload>;
 
     private readonly _storeMapFunction: (payload: any) => any;
 
@@ -48,7 +48,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
         name: string,
         colsMap: any[],
         service: CrudService<TPayload>, 
-        store: PromiseStore<TPayload[]>,
+        store: PromiseStore<TPayload>,
         storeMapFunction: (payload: any) => any = 
             (payload) => {
                 if ((payload === null)||(payload === undefined))
@@ -108,6 +108,8 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
             this.emitEvent(ComponentEvent.CREATE_INPUT, this._inputPayload);
         else if (this.event === ComponentEvent.UPDATE_WAIT_INPUT) 
             this.emitEvent(ComponentEvent.UPDATE_INPUT, this._inputPayload);
+        else
+            console.log("Invalid State Change", this.event)
     }
 
     protected onDeleteButtonClick() {
@@ -248,7 +250,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
     }
 
     protected storeListener(action: Action) {
-        console.log(action);
+        //console.log(action);
         let payload = [...this._store.get(this._storeMapFunction)];
 
         if (action.state === ActionState.FULFILLED)

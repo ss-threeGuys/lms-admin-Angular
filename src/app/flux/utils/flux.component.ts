@@ -124,9 +124,10 @@ export default class FluxComponent {
     }
 
     private eventHandler(event: ComponentEvent, payload: any) {
-        console.log(event, payload);
+        //console.log(event, payload);
 
-
+        this._event = event;
+        this._payload = payload;
        
 
         switch(event) {
@@ -204,8 +205,7 @@ export default class FluxComponent {
             
         }
 
-        this._event = event;
-        this._payload = payload;
+      
       }
 
 }

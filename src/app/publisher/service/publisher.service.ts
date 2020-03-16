@@ -32,10 +32,13 @@ export class PublisherService {
           })
         .then(
             (response) => {
-                console.log(response.data);
+                //console.log(response.data);
                 return new Promise(
                     (resolve,reject) =>{
-                        resolve(response.data);
+                        if (Array.isArray(response.data))
+                            resolve([...response.data]);
+                        else
+                            resolve([response.data]);
                 });
         })
         .catch(
@@ -57,10 +60,14 @@ export class PublisherService {
         const promise = axios.get(crudUrls.retrieve)
             .then(
                 (response) => {
-                    console.log(response.data);
                     return new Promise(
                         (resolve,reject) =>{
-                            resolve(response.data);
+                            if (Array.isArray(response.data)){
+                                resolve([...response.data]);
+                            }
+                            else {
+                                resolve([response.data]);
+                            }
                     });
             })
             .catch(
@@ -86,10 +93,13 @@ export class PublisherService {
           })
         .then(
             (response) => {
-                console.log(response.data);
+                //console.log(response.data);
                 return new Promise(
                     (resolve,reject) =>{
-                        resolve(response.data);
+                        if (Array.isArray(response.data))
+                            resolve([...response.data]);
+                        else
+                            resolve([response.data]);
                 });
         })
         .catch(
@@ -117,10 +127,13 @@ export class PublisherService {
           })
         .then(
             (response) => {
-                console.log(response.data);
+                //console.log(response.data);
                 return new Promise(
                     (resolve,reject) =>{
-                        resolve(response.data);
+                        if (Array.isArray(response.data))
+                            resolve([...response.data]);
+                        else
+                            resolve([response.data]);
                 });
         })
         .catch(

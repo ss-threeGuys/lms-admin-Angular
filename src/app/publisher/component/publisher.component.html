@@ -12,8 +12,8 @@
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-rowData let-columns="columns">
-    <tr [pSelectableRow]="rowData">
-      <td style="text-align: center" *ngFor="let col of columns">
+    <tr [pSelectableRow]="rowData" >
+      <td title="{{rowData['_id']}}" style="text-align: center" *ngFor="let col of columns">
         {{rowData[col.field]}}
       </td>
     </tr>

@@ -7,24 +7,28 @@ import { Injectable } from '@angular/core';
 @Injectable({
     providedIn: 'root'
   })
-export class PublisherStore extends PromiseStore<Publisher[]> {
+export class PublisherStore extends PromiseStore<Publisher> {
 
     constructor() {
         super(Target.PUBLISHER);
 
         this.mutation = (store, action, mapFunction) => {
-            if (action.task === Task.RETRIEVE) {
-                store.payload = mapFunction(action);
-            } else if (action.task === Task.CREATE) {
-                store.payload = store.payload.concat(mapFunction(action));
-            } else if (action.task === Task.UPDATE) {
-                let updatedElement = mapFunction(action).shift();
-                store.payload = store.payload.filter(  (v,i) => v._id != updatedElement._id).concat(updatedElement);
-            } else if (action.task === Task.DELETE) {
-                let deletedElement = mapFunction(action).shift();
-                store.payload = store.payload.filter(  (v,i) => v._id != deletedElement._id);
+            try {
+                if (action.task === Task.RETRIEVE) {
+                    store.payload = mapFunction(action);
+                } else if (action.task === Task.CREATE) {
+                    //console.log(action, mapFunction(action));
+                    store.payload = store.payload.concat(mapFunction(action));
+                } else if (action.task === Task.UPDATE) {
+                    let updatedElement = mapFunction(action).shift();
+                    store.payload = store.payload.filter(  (v,i) => v._id != updatedElement._id).concat(updatedElement);
+                } else if (action.task === Task.DELETE) {
+                    let deletedElement = mapFunction(action).shift();
+                    store.payload = store.payload.filter(  (v,i) => v._id != deletedElement._id);
+                }
+            } catch(e) {
+                console.log(action, e);
             }
-
         };
     }
 
