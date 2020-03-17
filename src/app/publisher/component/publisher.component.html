@@ -40,7 +40,8 @@
           <label for="name">{{col.header}}</label>
         </div>
         <div class="ui-g-8">
-          <input pInputText [id]="col.field" [(ngModel)]="_inputPayload[col.field]" autofocus
+          <input pInputText [id]="col.field"  autofocus
+            [formControl]="_formControl[col.field]"
             (keyup)="onInputChange()"
           />
         </div>

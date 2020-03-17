@@ -24,7 +24,7 @@ import { BorrowerComponent } from "./components/borrower/borrower.component";
 import { BorrowerService } from "./service/borrower.service";
 import { PublisherComponent } from "./publisher/component/publisher.component";
 import { PublisherService } from './publisher/service/publisher.service';
-
+import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,7 +48,8 @@ import { PublisherService } from './publisher/service/publisher.service';
     ButtonModule,
     MultiSelectModule,
     MenuModule,
-    TabMenuModule
+    TabMenuModule,
+    ReactiveFormsModule
   ],
   providers: [
     AuthorService,

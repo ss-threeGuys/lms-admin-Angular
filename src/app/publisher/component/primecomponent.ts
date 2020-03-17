@@ -6,6 +6,7 @@ import { Action, ActionState } from 'src/app/flux/types/action';
 import { Task } from 'src/app/flux/types/task';
 import { StoreEvent } from 'src/app/flux/types/store';
 import { ViewChild, ElementRef } from '@angular/core';
+import { FormControl } from '@angular/forms';
 
 export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
@@ -48,6 +49,8 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
     private _pageSize: number = 10;
 
     private _pageCount: number;
+
+    private _formControl: any = {};
 
     private readonly _service: CrudService<TPayload>;
 
@@ -110,6 +113,12 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
         this._sortField = colsMap[0].field;
         this._sortOrder = 1;
         this._storeMapFunction = storeMapFunction;
+
+
+        for (let col of colsMap) {
+            const defaultValue = col.defaultValue?col.default:null;
+            this._formControl[col.field] = new FormControl(defaultValue, col.validator);
+        }
     }
 
     protected abstract primeInit() : void; 
@@ -133,19 +142,22 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
     protected onInputChange() {
         //console.log('Input Changed');
-        for (let col of this._pColumnMap) {
-            if (col.validator !== undefined) {
-                for (let validator of col.validator) {
-                    if (!validator(this._inputPayload[col.field])) {
-                        this._pValidInput = false;
-                        return;
-                    }
-                }
-            }
-        }
-
         this._pValidInput = true;
-        
+        for (let key of Object.keys(this._formControl)) {
+            this._inputPayload[key] = this._formControl[key].value;
+            if (this._formControl[key].status !== 'VALID') {
+                this._pValidInput = false;
+            
+            }
+                
+        } 
+    }
+
+    private updateFormControlValue() {
+        for (let key of Object.keys(this._formControl)) {
+             this._formControl[key].setValue(this._inputPayload[key]);
+        }
+        this.onInputChange();
     }
 
     // ngOnDestroy() equivallent
@@ -195,6 +207,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
     protected onEventCreateRequest() {
         this.inputPayload = this.newObject();
+        this.updateFormControlValue() 
         this._pDeleteEnabled = false;
         this._pDeleteButtonShow = false;
         this._pSaveButtonShow = true;
@@ -219,6 +232,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
     protected onEventUpdateRequest(event: ComponentEvent, payload: any) {
         this.inputPayload = payload;
+        this.updateFormControlValue() 
         this._pDeleteEnabled = true;
         this._pSaveEnabled = true;
         this._pDeleteButtonShow = true;
