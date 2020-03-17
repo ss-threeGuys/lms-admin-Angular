@@ -7,8 +7,11 @@ import { Task } from 'src/app/flux/types/task';
 import { StoreEvent } from 'src/app/flux/types/store';
 import { ViewChild, ElementRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
 
 export default abstract class PrimeComponent<TPayload> extends FluxComponent {
+    
+    @ViewChild('dt') private tableElement: any;
 
     private _componentName: string = 'Prime';
 
@@ -48,9 +51,11 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
     private _pageSize: number = 10;
 
-    private _pageCount: number;
+    private _count: number;
 
     private _formControl: any = {};
+
+    private _loading:boolean = false;
 
     private readonly _service: CrudService<TPayload>;
 
@@ -58,7 +63,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
     private readonly _storeMapFunction: (payload: any) => any;
 
-    @ViewChild('dt') private tableElement: any;
+    
 
     get sortField() {
         return this._sortField;
@@ -84,12 +89,12 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
         this._pageSize = pageSize;
     }
 
-    get pageCount() {
-        return this._pageCount;
+    get count() {
+        return this._count;
     }
 
-    set pageCount(pageCount: number) {
-        this._pageCount = pageCount;
+    set count(count: number) {
+        this._count = count;
     }
 
     constructor(
@@ -128,7 +133,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
     // ngOnIntt() equivallent
     protected onEventInit() {
         this._store.on(StoreEvent.CHANGE, this.storeListener.bind(this));
-        this.emitEvent(ComponentEvent.RETRIEVE_REQUEST);
+        //this.emitEvent(ComponentEvent.RETRIEVE_REQUEST);
         this.primeInit();
     }
 
@@ -189,7 +194,16 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
     protected onRowSelect(event:any) {
         this._inputPayload = {...event.data};
         this.emitEvent(ComponentEvent.UPDATE_REQUEST, this._inputPayload);
-      }
+    }
+
+    protected onLoadData(event: LazyLoadEvent) {
+
+        console.log(event);
+        this._currentPage = 1+(event.first/this._pageSize);
+        this._loading = true;
+
+        this.emitEvent(ComponentEvent.RETRIEVE_REQUEST);
+    }  
 
     /*
     * 
@@ -200,7 +214,10 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
     }
 
     protected onEventRetrieveDone(event: ComponentEvent, payload: any) {
+        let paging = payload?payload.pop().__paging:{};
         this.pPayload = payload;
+        this._count = paging.count;
+        this._loading = false;
         this.emitEvent(ComponentEvent.IDLE);
     }
 

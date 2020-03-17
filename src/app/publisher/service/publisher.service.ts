@@ -81,7 +81,7 @@ export class PublisherService {
 
         const promise = axios({
             method: 'GET',
-            url: crudUrls.retrieve,
+            url: crudUrls.retrieve+'/paging',
             params: {
                 sortField: sortField,
                 sortOrder: sortOrder,
@@ -93,11 +93,13 @@ export class PublisherService {
                 (response) => {
                     return new Promise(
                         (resolve,reject) =>{
+                            let paging = response.data.pop();
+                            
                             if (Array.isArray(response.data)){
-                                resolve([...response.data]);
+                                resolve([...response.data, paging]);
                             }
                             else {
-                                resolve([response.data]);
+                                resolve([response.data, paging]);
                             }
                     });
             })
