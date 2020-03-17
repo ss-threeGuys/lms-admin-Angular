@@ -29,7 +29,7 @@ export class AuthorComponent implements OnInit {
   constructor(private authorService: AuthorService) { }
 
   ngOnInit() {
-    this.authorService.getAuthors().then(authors => { return this.authors = authors });
+    this.authorService.getAuthors().subscribe(authors => { return this.authors = authors });
 
 
     this.cols = [
@@ -48,7 +48,7 @@ export class AuthorComponent implements OnInit {
     let authors = [...this.authors];
     if (this.newAuthor) {
       this.authorService.createAuthor(this.author)
-        .then(author => {
+        .subscribe(author => {
           authors.push(author);
           this.authors = authors;
           this.author = null;
@@ -58,7 +58,7 @@ export class AuthorComponent implements OnInit {
     } else {
       console.log(this.author);
       this.authorService.updateAuthor(this.author)
-        .then(() => {
+        .subscribe(() => {
           authors[this.authors.indexOf(this.selectedAuthor)] = this.author;
           this.authors = authors;
           this.author = null;
@@ -70,7 +70,7 @@ export class AuthorComponent implements OnInit {
 
   delete() {
     this.authorService.deleteAuthor(this.author)
-      .then(() => {
+      .subscribe(() => {
         let index = this.authors.indexOf(this.selectedAuthor);
         this.authors = this.authors.filter((val, i) => i != index);
         this.author = null;
