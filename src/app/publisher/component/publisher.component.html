@@ -1,6 +1,7 @@
 <p-table #dt [columns]="_pColumnMap" [value]="_pPayload" selectionMode="single" [(selection)]="selectedAuthor"
-  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15" 
-  [sortField]="_pColumnMap[0]?.field" [sortOrder]="1">
+  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="_pageSize" [totalRecords]="_count"
+  [sortField]="_pColumnMap[0]?.field" [sortOrder]="1"
+  [lazy]="true" (onLazyLoad)="onLoadData($event)" [loading]="_loading">
   <ng-template pTemplate="caption">
     <div style="text-align: right">
       <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
@@ -40,7 +41,8 @@
           <label for="name">{{col.header}}</label>
         </div>
         <div class="ui-g-8">
-          <input pInputText [id]="col.field" [(ngModel)]="_inputPayload[col.field]" autofocus
+          <input pInputText [id]="col.field"  autofocus
+            [formControl]="_formControl[col.field]"
             (keyup)="onInputChange()"
           />
         </div>

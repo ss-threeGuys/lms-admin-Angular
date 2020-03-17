@@ -6,8 +6,12 @@ import { Action, ActionState } from 'src/app/flux/types/action';
 import { Task } from 'src/app/flux/types/task';
 import { StoreEvent } from 'src/app/flux/types/store';
 import { ViewChild, ElementRef } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
 
 export default abstract class PrimeComponent<TPayload> extends FluxComponent {
+    
+    @ViewChild('dt') private tableElement: any;
 
     private _componentName: string = 'Prime';
 
@@ -43,13 +47,23 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
     private _sortOrder: number = 0;
 
+    private _currentPage: number = 1;
+
+    private _pageSize: number = 10;
+
+    private _count: number;
+
+    private _formControl: any = {};
+
+    private _loading:boolean = false;
+
     private readonly _service: CrudService<TPayload>;
 
     private readonly _store: PromiseStore<TPayload>;
 
     private readonly _storeMapFunction: (payload: any) => any;
 
-    @ViewChild('dt') private tableElement: any;
+    
 
     get sortField() {
         return this._sortField;
@@ -57,6 +71,30 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
     get sortOrder() {
         return this._sortOrder;
+    }
+
+    get currentPage() {
+        return this._currentPage;
+    }
+
+    set currentPage(currentPage:number) {
+        this.currentPage = currentPage;
+    }
+
+    get pageSize() {
+        return this._pageSize;
+    }
+
+    set pageSize(pageSize: number) {
+        this._pageSize = pageSize;
+    }
+
+    get count() {
+        return this._count;
+    }
+
+    set count(count: number) {
+        this._count = count;
     }
 
     constructor(
@@ -80,6 +118,12 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
         this._sortField = colsMap[0].field;
         this._sortOrder = 1;
         this._storeMapFunction = storeMapFunction;
+
+
+        for (let col of colsMap) {
+            const defaultValue = col.defaultValue?col.default:null;
+            this._formControl[col.field] = new FormControl(defaultValue, col.validator);
+        }
     }
 
     protected abstract primeInit() : void; 
@@ -89,7 +133,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
     // ngOnIntt() equivallent
     protected onEventInit() {
         this._store.on(StoreEvent.CHANGE, this.storeListener.bind(this));
-        this.emitEvent(ComponentEvent.RETRIEVE_REQUEST);
+        //this.emitEvent(ComponentEvent.RETRIEVE_REQUEST);
         this.primeInit();
     }
 
@@ -103,19 +147,22 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
     protected onInputChange() {
         //console.log('Input Changed');
-        for (let col of this._pColumnMap) {
-            if (col.validator !== undefined) {
-                for (let validator of col.validator) {
-                    if (!validator(this._inputPayload[col.field])) {
-                        this._pValidInput = false;
-                        return;
-                    }
-                }
-            }
-        }
-
         this._pValidInput = true;
-        
+        for (let key of Object.keys(this._formControl)) {
+            this._inputPayload[key] = this._formControl[key].value;
+            if (this._formControl[key].status !== 'VALID') {
+                this._pValidInput = false;
+            
+            }
+                
+        } 
+    }
+
+    private updateFormControlValue() {
+        for (let key of Object.keys(this._formControl)) {
+             this._formControl[key].setValue(this._inputPayload[key]);
+        }
+        this.onInputChange();
     }
 
     // ngOnDestroy() equivallent
@@ -147,24 +194,37 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
     protected onRowSelect(event:any) {
         this._inputPayload = {...event.data};
         this.emitEvent(ComponentEvent.UPDATE_REQUEST, this._inputPayload);
-      }
+    }
+
+    protected onLoadData(event: LazyLoadEvent) {
+
+        console.log(event);
+        this._currentPage = 1+(event.first/this._pageSize);
+        this._loading = true;
+
+        this.emitEvent(ComponentEvent.RETRIEVE_REQUEST);
+    }  
 
     /*
     * 
     */
 
     protected onEventRetrieveRequest() {
-        this.serviceRetrieve(this._sortField, this._sortOrder);
+        this.serviceRetrieve(this._sortField, this._sortOrder, this._currentPage, this._pageSize);
     }
 
     protected onEventRetrieveDone(event: ComponentEvent, payload: any) {
+        let paging = payload?payload.pop().__paging:{};
         this.pPayload = payload;
+        this._count = paging.count;
+        this._loading = false;
         this.emitEvent(ComponentEvent.IDLE);
     }
 
 
     protected onEventCreateRequest() {
         this.inputPayload = this.newObject();
+        this.updateFormControlValue() 
         this._pDeleteEnabled = false;
         this._pDeleteButtonShow = false;
         this._pSaveButtonShow = true;
@@ -189,6 +249,7 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
 
     protected onEventUpdateRequest(event: ComponentEvent, payload: any) {
         this.inputPayload = payload;
+        this.updateFormControlValue() 
         this._pDeleteEnabled = true;
         this._pSaveEnabled = true;
         this._pDeleteButtonShow = true;
@@ -263,8 +324,8 @@ export default abstract class PrimeComponent<TPayload> extends FluxComponent {
         this._inputPayload = inputPayload;
     }
 
-    protected serviceRetrieve(sortField: string, sortOrder: number) {
-        this._service.retrieve(sortField, sortOrder);
+    protected serviceRetrieve(sortField: string, sortOrder: number, currentPage:number, pageSize: number) {
+        this._service.retrieve(sortField, sortOrder, currentPage, pageSize);
     }
 
     protected serviceCreate(payload: any) {
