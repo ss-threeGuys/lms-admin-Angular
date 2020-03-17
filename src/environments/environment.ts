@@ -2,8 +2,11 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import { crudUrls } from './crud.urls';
+
 export const environment = {
-  production: false
+  production: false,
+  crudUrls: crudUrls,
 };
 
 /*

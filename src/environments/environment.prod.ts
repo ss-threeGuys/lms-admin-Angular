@@ -1,3 +1,6 @@
+import { crudUrls } from './crud.urls';
+
 export const environment = {
-  production: true
+  production: true,
+  crudUrls: crudUrls,
 };

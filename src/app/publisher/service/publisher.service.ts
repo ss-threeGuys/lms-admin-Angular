@@ -4,13 +4,35 @@ import PromiseAction from 'src/app/flux/utils/promise.action';
 import { Target } from 'src/app/flux/types/target';
 import { Task } from 'src/app/flux/types/task';
 import axios from 'axios';
+import { environment } from 'src/environments/environment';
 
 const crudUrls = {
-    create:     'http://localhost:3000/admin/publishers',
-    retrieve:   'http://localhost:3000/admin/publishers',
-    update:     'http://localhost:3000/admin/publishers/:id',
-    delete:     'http://localhost:3000/admin/publishers/:id',
+    create:     'http://'+environment.crudUrls.baseHost+':'
+                    + environment.crudUrls.basePort
+                    + environment.crudUrls.prefix 
+                    + environment.crudUrls.publisher.create.url,
+    retrieve:   'http://'+environment.crudUrls.baseHost+':'
+                    + environment.crudUrls.basePort
+                    + environment.crudUrls.prefix 
+                    + environment.crudUrls.publisher.retrieve.url,
+    update:     'http://'+environment.crudUrls.baseHost+':'
+                    + environment.crudUrls.basePort
+                    + environment.crudUrls.prefix 
+                    + environment.crudUrls.publisher.update.url,
+    delete:     'http://'+environment.crudUrls.baseHost+':'
+                    + environment.crudUrls.basePort
+                    + environment.crudUrls.prefix 
+                    + environment.crudUrls.publisher.delete.url,
 };
+
+
+const params = {
+    create: environment.crudUrls.publisher.create.param,
+    retrieve: environment.crudUrls.publisher.retrieve.param,
+    update: environment.crudUrls.publisher.update.param,
+    delete: environment.crudUrls.publisher.delete.param,
+}
+
 
 
 @Injectable({
@@ -26,7 +48,7 @@ export class PublisherService {
     create (publisher: Publisher) {
 
         const promise = axios({
-            method: 'post',
+            method: 'POST',
             url: crudUrls.create,
             data: publisher
           })
@@ -58,7 +80,7 @@ export class PublisherService {
     retrieve(sortField:string, sortOrder:number, currentPage:number, pageSize:number) {
 
         const promise = axios({
-            method: 'get',
+            method: 'GET',
             url: crudUrls.retrieve,
             params: {
                 sortField: sortField,
@@ -95,9 +117,15 @@ export class PublisherService {
 
     update (publisher: Publisher) {
 
+        let url = crudUrls.update;
+
+        for(let param of Object.keys(params.update)) {
+            // :id -> publisher['_id']
+            url = url.replace(':'+param, publisher[params.update[param]]);
+        }
         const promise = axios({
-            method: 'put',
-            url: crudUrls.update.replace(':id', publisher._id),
+            method: 'PUT',
+            url: url,
             data: publisher
           })
         .then(
@@ -128,10 +156,16 @@ export class PublisherService {
     }
 
     delete (publisher: Publisher) {
+        let url = crudUrls.delete;
 
+        for(let param of Object.keys(params.delete)) {
+            // :id -> publisher['_id']
+            url = url.replace(':'+param, publisher[params.delete[param]]);
+        }
+    
         const promise = axios({
-            method: 'delete',
-            url: crudUrls.update.replace(':id', publisher._id),
+            method: 'DELETE',
+            url: url,
             data: publisher
           })
         .then(
