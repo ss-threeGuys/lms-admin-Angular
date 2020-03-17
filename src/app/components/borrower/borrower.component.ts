@@ -19,7 +19,7 @@ export class BorrowerComponent implements OnInit {
   constructor(private borrowerService: BorrowerService) { }
 
   ngOnInit() {
-    this.borrowerService.getBorrowers().then(borrowers => {
+    this.borrowerService.getBorrowers().subscribe(borrowers => {
       return (this.borrowers = borrowers);
     });
     this.cols = [
@@ -39,7 +39,7 @@ export class BorrowerComponent implements OnInit {
     let borrowers = [...this.borrowers];
 
     if (this.newBorrower) {
-      this.borrowerService.createBorrower(this.borrower).then((borrower) => {
+      this.borrowerService.createBorrower(this.borrower).subscribe((borrower) => {
         borrowers.push(borrower);
         this.borrowers = borrowers;
         this.borrower = null;
@@ -47,7 +47,7 @@ export class BorrowerComponent implements OnInit {
       });
     }
     else {
-      this.borrowerService.updateBorrower(this.borrower).then(() => {
+      this.borrowerService.updateBorrower(this.borrower).subscribe(() => {
         borrowers[this.borrowers.indexOf(this.selectedBorrower)] = this.borrower;
         this.borrowers = borrowers;
         this.borrower = null;
@@ -57,7 +57,7 @@ export class BorrowerComponent implements OnInit {
   }
 
   delete() {
-    this.borrowerService.deleteBorrower(this.borrower).then(() => {
+    this.borrowerService.deleteBorrower(this.borrower).subscribe(() => {
       let index = this.borrowers.indexOf(this.selectedBorrower);
       this.borrowers = this.borrowers.filter((_, i) => i != index);
       this.borrower = null;
