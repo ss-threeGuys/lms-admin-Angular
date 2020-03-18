@@ -39,8 +39,8 @@ export class BorrowerComponent implements OnInit {
     let borrowers = [...this.borrowers];
 
     if (this.newBorrower) {
-      this.borrowerService.createBorrower(this.borrower).subscribe((borrower) => {
-        borrowers.push(borrower);
+      this.borrowerService.createBorrower(this.borrower).subscribe(() => {
+        borrowers.push(this.borrower);
         this.borrowers = borrowers;
         this.borrower = null;
         this.displayDialog = false;
