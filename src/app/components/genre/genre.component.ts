@@ -19,7 +19,7 @@ export class GenreComponent implements OnInit {
   constructor(private genreService: GenreService) { }
 
   ngOnInit() {
-    this.genreService.getGenres().then(genres => {
+    this.genreService.getGenres().subscribe(genres => {
       return (this.genres = genres);
     });
     this.cols = [
@@ -37,7 +37,7 @@ export class GenreComponent implements OnInit {
     let genres = [...this.genres];
 
     if (this.newGenre) {
-      this.genreService.createGenre(this.genre).then(() => {
+      this.genreService.createGenre(this.genre).subscribe(() => {
         genres.push(this.genre);
         this.genres = genres;
         this.genre = null;
@@ -45,7 +45,7 @@ export class GenreComponent implements OnInit {
       });
     }
     else {
-      this.genreService.updateGenre(this.genre).then(() => {
+      this.genreService.updateGenre(this.genre).subscribe(() => {
         genres[this.genres.indexOf(this.selectedGenre)] = this.genre;
         this.genres = genres;
         this.genre = null;
@@ -55,7 +55,7 @@ export class GenreComponent implements OnInit {
   }
 
   delete() {
-    this.genreService.deleteGenre(this.genre).then(() => {
+    this.genreService.deleteGenre(this.genre).subscribe(() => {
       console.log(this.genres);
       let index = this.genres.indexOf(this.selectedGenre);
       this.genres = this.genres.filter((_, i) => i != index);
