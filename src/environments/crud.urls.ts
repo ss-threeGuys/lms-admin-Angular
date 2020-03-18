@@ -10,6 +10,9 @@ export const crudUrls = {
         retrieve:   { url: '/publishers', param:{} },
         update:     { url: '/publishers/:id', param: {id:'_id'} },
         delete:     { url: '/publishers/:id', param: {id:'_id'} } 
-    }
+    },
+
+    author: '/authors',
+    book : '/books',
     
 }

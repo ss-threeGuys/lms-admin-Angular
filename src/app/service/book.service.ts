@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Book } from '../domain/book';
+import { environment } from  "../../environments/environment"
+const {baseHost, basePort, prefix, book} = environment.crudUrls;
+const BASEURL = `http://${baseHost}:${basePort}${prefix}${book}/`
 
 @Injectable(
   { providedIn: 'root' }
@@ -12,23 +15,23 @@ export class BookService {
   ) { }
 
   getBooks() {
-    return this.http.get<any>('http://localhost:3000/admin/books')
+    return this.http.get<any>(BASEURL)
   }
 
   createBook(book) {
-    return this.http.post<Book>('http://localhost:3000/admin/books', book)
+    return this.http.post<Book>(BASEURL, book)
       
 
   }
 
   updateBook(book) {
-    return this.http.put(`http://localhost:3000/admin/books/${book._id}`, book)
+    return this.http.put(BASEURL + book._id, book)
 
 
   }
 
   deleteBook(book) {
-    return this.http.delete(`http://localhost:3000/admin/books/${book._id}`)
+    return this.http.delete(BASEURL + book._id)
      
   }
 }
