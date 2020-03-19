@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { HttpParams } from "@angular/common/http";
 import { Genre } from '../domain/genre';
 import { environment } from 'src/environments/environment';
 
@@ -36,7 +37,20 @@ const params = {
 export class GenreService {
   constructor(private http: HttpClient) { }
 
-  getGenres() {
+  getGenres(currentPage: number, pageSize: number, sortField: string, sortOrder: number) {
+    sortField = sortField.trim();
+    const options = {
+      params: new HttpParams()
+        .set('sortField', sortField)
+        .set('sortOrder', sortOrder.toString())
+        .set('currentPage', currentPage.toString())
+        .set('pageSize', pageSize.toString())
+    };
+    return this.http
+      .get<any[]>(crudUrls.retrieve + '/paging', options)
+  }
+
+  getAllGenres() {
     return this.http
       .get<Genre[]>(crudUrls.retrieve)
   }

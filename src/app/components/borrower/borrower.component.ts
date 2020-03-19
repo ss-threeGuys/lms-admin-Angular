@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Borrower } from 'src/app/domain/borrower';
 import { BorrowerService } from 'src/app/service/borrower.service';
+import { LazyLoadEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-borrower',
@@ -15,18 +16,30 @@ export class BorrowerComponent implements OnInit {
   newBorrower: boolean;
   borrowers: Borrower[];
   cols: any[];
+  totalRecords: number;
+  rowsNumber: number;
+  currentPage: number;
 
-  constructor(private borrowerService: BorrowerService) { }
+  constructor(private borrowerService: BorrowerService) {
+    this.currentPage = 1;
+    this.rowsNumber = 4;
+   }
 
   ngOnInit() {
-    this.borrowerService.getBorrowers().subscribe(borrowers => {
-      return (this.borrowers = borrowers);
-    });
     this.cols = [
       { field: 'name', header: "Name"},
       { field: 'address', header: 'Address'},
       { field: 'phone', header: 'Phone'}
     ];
+  }
+
+  loadBorrowersLazy(event: LazyLoadEvent) {
+    this.currentPage = 1 + (event.first / this.rowsNumber);
+    this.borrowerService.getBorrowers(this.currentPage, this.rowsNumber, event.sortField, event.sortOrder).subscribe(res => {
+      this.totalRecords = res[res.length - 1].__paging.count;
+      res.pop();
+      return (this.borrowers = [...res]);
+    });
   }
 
   showDialogToAdd() {

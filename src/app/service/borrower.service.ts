@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { HttpParams } from "@angular/common/http";
 import { Borrower } from '../domain/borrower';
 import { environment } from 'src/environments/environment';
 
@@ -36,9 +37,17 @@ const params = {
 export class BorrowerService {
   constructor(private http: HttpClient) { }
 
-  getBorrowers() {
+  getBorrowers(currentPage: number, pageSize: number, sortField: string, sortOrder: number) {
+    sortField = sortField.trim();
+    const options = {
+      params: new HttpParams()
+        .set('sortField', sortField)
+        .set('sortOrder', sortOrder.toString())
+        .set('currentPage', currentPage.toString())
+        .set('pageSize', pageSize.toString())
+    };
     return this.http
-      .get<Borrower[]>(crudUrls.retrieve)
+      .get<any[]>(crudUrls.retrieve + '/paging', options)
   }
 
   createBorrower(borrower) {

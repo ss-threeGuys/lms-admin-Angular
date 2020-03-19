@@ -1,5 +1,6 @@
 <p-table #dt [columns]="cols" [value]="borrowers" selectionMode="single" [(selection)]="selectedBorrower"
-  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="rowsNumber" [lazy]="true"
+  (onLazyLoad)="loadBorrowersLazy($event)" [totalRecords]="totalRecords" sortField='name' sortOrder=1>
   <ng-template pTemplate="caption">
     List of Borrowers
   </ng-template>

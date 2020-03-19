@@ -119,7 +119,7 @@ export class BookComponent implements OnInit {
 
   getAllGenres() {
 
-    this.genreService.getGenres().subscribe(genres => {
+    this.genreService.getAllGenres().subscribe(genres => {
       this.allGenres = genres.map(genre => ({ label: genre.name, value: genre._id }));
     })
 

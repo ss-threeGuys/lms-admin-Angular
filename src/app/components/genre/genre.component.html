@@ -1,5 +1,6 @@
 <p-table #dt [columns]="cols" [value]="genres" selectionMode="single" [(selection)]="selectedGenre"
-  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="rowsNumber" [lazy]="true"
+  (onLazyLoad)="loadGenresLazy($event)" [totalRecords]="totalRecords" sortField='name' sortOrder=1>
   <ng-template pTemplate="caption">
     List of Genres
   </ng-template>
