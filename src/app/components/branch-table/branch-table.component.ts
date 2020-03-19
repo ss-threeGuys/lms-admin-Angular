@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Branch } from "src/app/domain/branch";
 import { BranchService } from "src/app/service/branch.service";
+import { LazyLoadEvent } from "primeng/api";
 
 @Component({
   selector: "app-branch-table",
@@ -14,13 +15,14 @@ export class BranchTableComponent implements OnInit {
   newBranch: boolean;
   branches: Branch[];
   cols: any[];
+  loading: boolean;
+  totalRecords;
+  currentPage: number = 1;
+  pageSize: number = 15;
 
   constructor(private branchService: BranchService) {}
 
   ngOnInit() {
-    this.branchService.getBranches().subscribe(branches => {
-      return (this.branches = branches);
-    });
     this.cols = [
       { field: "branchName", header: "Branch Name" },
       { field: "branchAddress", header: "Branch Address" }
@@ -74,5 +76,25 @@ export class BranchTableComponent implements OnInit {
       branch[prop] = c[prop];
     }
     return branch;
+  }
+
+  loadBranchesLazy(event: LazyLoadEvent) {
+    this.loading = true;
+    this.currentPage = 1 + event.first / this.pageSize;
+
+    this.branchService
+      .getBranchesWithPaging(
+        event.sortField,
+        event.sortOrder,
+        this.currentPage,
+        this.pageSize
+      )
+      .subscribe(branches => {
+        let pagingData = branches.pop();
+
+        this.totalRecords = pagingData.__paging.count;
+        this.loading = false;
+        this.branches = branches;
+      });
   }
 }

@@ -1,5 +1,7 @@
-<p-table #dt [columns]="cols" [value]="branches" selectionMode="single" [(selection)]="selectedBranch"
-  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+<p-table #dt [columns]="cols" [value]="branches" [lazy]="true" (onLazyLoad)="loadBranchesLazy($event)"
+  [totalRecords]="totalRecords" selectionMode="single" [(selection)]="selectedBranch"
+  (onRowSelect)="onRowSelect($event)" [paginator]="true" [sortField]="cols[0].field" [sortOrder]="1" [rows]="pageSize"
+  [loading]="loading">
   <ng-template pTemplate="caption">
     List of Branches
   </ng-template>

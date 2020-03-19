@@ -15,8 +15,10 @@ const baseURL = `http://${baseHost}:${basePort}${prefix}${url}`;
 export class BranchService {
   constructor(private http: HttpClient) {}
 
-  getBranches() {
-    return this.http.get<any>(baseURL);
+  getBranchesWithPaging(sortField, sortOrder, currentPage, pageSize) {
+    return this.http.get<any>(
+      `${baseURL}/paging?sortField=${sortField}&sortOrder=${sortOrder}&currentPage=${currentPage}&pageSize=${pageSize}`
+    );
   }
 
   createBranch(branch) {
