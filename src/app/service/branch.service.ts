@@ -16,25 +16,18 @@ export class BranchService {
   constructor(private http: HttpClient) {}
 
   getBranches() {
-    return this.http
-      .get<any>(baseURL)
-      .toPromise()
-      .then(res => <Branch[]>res)
-      .then(data => data);
+    return this.http.get<any>(baseURL);
   }
 
   createBranch(branch) {
-    return this.http
-      .post<Branch>(baseURL, branch)
-      .toPromise()
-      .then(data => data);
+    return this.http.post<Branch>(baseURL, branch);
   }
 
   updateBranch(branch) {
-    return this.http.put(`${baseURL}/${branch._id}`, branch).toPromise();
+    return this.http.put(`${baseURL}/${branch._id}`, branch);
   }
 
   deleteBranch(branch) {
-    return this.http.delete(`${baseURL}/${branch._id}`).toPromise();
+    return this.http.delete(`${baseURL}/${branch._id}`);
   }
 }

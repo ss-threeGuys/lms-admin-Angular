@@ -18,7 +18,7 @@ export class BranchTableComponent implements OnInit {
   constructor(private branchService: BranchService) {}
 
   ngOnInit() {
-    this.branchService.getBranches().then(branches => {
+    this.branchService.getBranches().subscribe(branches => {
       return (this.branches = branches);
     });
     this.cols = [
@@ -37,14 +37,14 @@ export class BranchTableComponent implements OnInit {
     let branches = [...this.branches];
 
     if (this.newBranch) {
-      this.branchService.createBranch(this.branch).then(branch => {
+      this.branchService.createBranch(this.branch).subscribe(branch => {
         branches.push(branch);
         this.branches = branches;
         this.branch = null;
         this.displayDialog = false;
       });
     } else {
-      this.branchService.updateBranch(this.branch).then(() => {
+      this.branchService.updateBranch(this.branch).subscribe(() => {
         branches[this.branches.indexOf(this.selectedBranch)] = this.branch;
         this.branches = branches;
         this.branch = null;
@@ -54,7 +54,7 @@ export class BranchTableComponent implements OnInit {
   }
 
   delete() {
-    this.branchService.deleteBranch(this.branch).then(() => {
+    this.branchService.deleteBranch(this.branch).subscribe(() => {
       let index = this.branches.indexOf(this.selectedBranch);
       this.branches = this.branches.filter((val, i) => i != index);
       this.branch = null;
