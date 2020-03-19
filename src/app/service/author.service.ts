@@ -17,6 +17,11 @@ export class AuthorService {
       
   }
 
+  getAuthorsPaging(sortField, sortOrder, curPage, pageSize) {
+    return this.http.get<any>(
+      `${BASEURL}paging?sortField=${sortField}&sortOrder=${sortOrder}&currentPage=${curPage}&pageSize=${pageSize}`)
+  }
+
   createAuthor(author) {
     return this.http
       .post<Author>(BASEURL, author)

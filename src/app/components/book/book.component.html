@@ -1,5 +1,6 @@
-<p-table  [columns]="cols" [value]="outputBooks" selectionMode="single" [(selection)]="selectedBook"
-  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+<p-table  #dt [columns]="cols" [value]="outputBooks" selectionMode="single" [(selection)]="selectedBook"
+  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="10" [rows]="_pageSize" [totalRecords]="_count"
+  [sortField]="cols[0].field" [sortOrder]="1" [lazy]="true" (onLazyLoad)="onLoadData($event)">
   <ng-template pTemplate="caption">
     List of Books
   </ng-template>

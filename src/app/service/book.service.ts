@@ -18,6 +18,21 @@ export class BookService {
     return this.http.get<any>(BASEURL)
   }
 
+  getBooksPaging(sortField, sortOrder, curPage, pageSize) {
+    if (sortField === "authorNames") {
+      sortField = "authors";
+    }
+    if (sortField === "genreNames") {
+      sortField = "genres";
+    }
+    if (sortField === "publisherName") {
+      sortField = "publisher";
+    }
+
+    return this.http.get<any>(
+      `${BASEURL}paging?sortField=${sortField}&sortOrder=${sortOrder}&currentPage=${curPage}&pageSize=${pageSize}`)
+ }
+
   createBook(book) {
     return this.http.post<Book>(BASEURL, book)
       

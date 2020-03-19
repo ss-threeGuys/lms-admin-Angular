@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BookService } from '../../service/book.service';
 import { AuthorService } from '../../service/author.service'
 import { Book } from '../../domain/book';
@@ -6,6 +6,7 @@ import { SelectItem } from 'primeng/api';
 import { GenreService } from '../../service/genre.service';
 import { PublisherService } from '../../service/publisher.service';
 import { Validators, FormControl} from '@angular/forms';
+import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
 
 
 export class BooksOutput {
@@ -38,6 +39,8 @@ export class PrimeBook {
 })
 export class BookComponent implements OnInit {
 
+  @ViewChild('dt') private tableElement: any;
+  
   displayDialog: boolean;
 
   book: Book;
@@ -65,6 +68,16 @@ export class BookComponent implements OnInit {
     publisher : new FormControl([])
 }
 
+  _sortField;
+
+  _sortOrder;
+  
+  _currentPage;
+
+  _pageSize = 10;
+
+  _count;
+
   constructor(
     private bookService: BookService,
     private authorService: AuthorService,
@@ -72,6 +85,33 @@ export class BookComponent implements OnInit {
     private publisherService: PublisherService
   ) { }
 
+  protected ngAfterViewInit() {
+    this.tableElement.onSort.subscribe(data => {
+      console.log(data);
+      this._sortField = data.field;
+      this._sortOrder = data.order;
+    });
+  }
+
+  protected onLoadData(event: LazyLoadEvent) {
+    console.log(event);
+    this._currentPage = 1+(event.first/this._pageSize); 
+    this.bookService.getBooksPaging(
+      event.sortField, event.sortOrder, this._currentPage, this._pageSize
+      ).subscribe(books => { 
+ 
+      let paging = books.pop();
+     
+      this._count = paging.__paging.count;
+      console.log(this._count);
+
+      this.outputBooks = this.addBooksFromServiceToOutput(books);
+    
+    });
+
+
+  }
+  
   ngOnInit() {
    
     this.getAllAuthors();

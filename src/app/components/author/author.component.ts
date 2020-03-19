@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthorService } from '../../service/author.service';
 import { Author } from '../../domain/author';
-import { Validators, FormControl} from '@angular/forms';
+import { Validators, FormControl } from '@angular/forms';
+import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
 
 export class PrimeAuthor implements Author {
   constructor(public name?) { }
@@ -14,6 +15,8 @@ export class PrimeAuthor implements Author {
   providers: []
 })
 export class AuthorComponent implements OnInit {
+
+  @ViewChild('dt') private tableElement: any;
 
   displayDialog: boolean;
 
@@ -29,15 +32,51 @@ export class AuthorComponent implements OnInit {
 
   nameField: FormControl = new FormControl('', Validators.required);
 
+  _sortField;
+
+  _sortOrder;
+  
+  _currentPage;
+
+  _pageSize = 10;
+
+  _count;
+
   constructor(private authorService: AuthorService) { }
 
   ngOnInit() {
-    this.authorService.getAuthors().subscribe(authors => { return this.authors = authors });
-
     this.cols = [
       { field: 'name', header: 'Name' }
     ]
   }
+
+  protected ngAfterViewInit() {
+    this.tableElement.onSort.subscribe(data => {
+      
+      this._sortField = data.field;
+      this._sortOrder = data.order;
+    });
+  }
+
+  protected onLoadData(event: LazyLoadEvent) {
+    console.log(event);
+    this._currentPage = 1+(event.first/this._pageSize); 
+    this.authorService.getAuthorsPaging(
+      event.sortField, event.sortOrder, this._currentPage, this._pageSize
+      ).subscribe(authors => { 
+ 
+      let paging = authors.pop();
+     
+      this._count = paging.__paging.count;
+      console.log(this._count);
+
+      return this.authors = authors 
+    
+    });
+
+
+  }
+
 
 
 
@@ -62,9 +101,9 @@ export class AuthorComponent implements OnInit {
         })
 
     } else {
-    
-      this.author = {...this.author, "name" : this.nameField.value}
-  
+
+      this.author = { ...this.author, "name": this.nameField.value }
+
       this.authorService.updateAuthor(this.author)
         .subscribe(() => {
           authors[this.authors.indexOf(this.selectedAuthor)] = this.author;
