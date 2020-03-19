@@ -13,9 +13,6 @@ export class PublisherService {
 
   getPublishers() {
     return this.http.get<any>('http://localhost:3000/admin/publishers')
-            .toPromise()
-            .then(res => <Publisher[]> res)
-            .then(data => data);
   }
 
 

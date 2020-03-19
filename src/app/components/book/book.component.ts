@@ -65,7 +65,7 @@ export class BookComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.bookService.getBooks().then(books => this.addBooksFromServiceToOutput(books))
+    this.bookService.getBooks().subscribe(books => this.addBooksFromServiceToOutput(books))
 
     this.getAllAuthors();
 
@@ -111,13 +111,14 @@ export class BookComponent implements OnInit {
   }
 
   getAllAuthors() {
-    this.authorService.getAuthors().then(authors => {
+    this.authorService.getAuthors().subscribe(authors => {
       this.allAuthors = authors.map(author => ({ label: author.name, value: author._id }));
 
     })
   }
 
   getAllGenres() {
+
 
     this.genreService.getAllGenres().subscribe(genres => {
       this.allGenres = genres.map(genre => ({ label: genre.name, value: genre._id }));
@@ -126,7 +127,7 @@ export class BookComponent implements OnInit {
   }
 
   getAllPublishers() {
-    this.publisherService.getPublishers().then(publishers => {
+    this.publisherService.getPublishers().subscribe(publishers => {
       this.allPublishers = publishers.map(publisher => ({ label: publisher.name, value: publisher._id }));
     })
   }
@@ -144,7 +145,7 @@ export class BookComponent implements OnInit {
       console.log("this.book" + JSON.stringify(this.book));
 
       this.bookService.createBook(this.book)
-        .then(book => {
+        .subscribe(book => {
           console.log("book after create" + JSON.stringify(book))
           let authorNames = book.authors.map(author => author.name).join(", ")
           let authorIds = book.authors.map(author => author._id);
@@ -161,9 +162,9 @@ export class BookComponent implements OnInit {
     } else {
 
       this.bookService.updateBook(this.book)
-        .then(() => {
+        .subscribe(() => {
           this.outputBooks = [];
-          this.bookService.getBooks().then(_books => {
+          this.bookService.getBooks().subscribe(_books => {
             this.addBooksFromServiceToOutput(_books)
             this.book = null;
             this.displayDialog = false
@@ -177,7 +178,7 @@ export class BookComponent implements OnInit {
 
   delete() {
     this.bookService.deleteBook(this.book)
-      .then(() => {
+      .subscribe(() => {
         let index = this.outputBooks.indexOf(this.selectedBook);
         this.outputBooks = this.outputBooks.filter((val, i) => i != index);
         this.book = null;
