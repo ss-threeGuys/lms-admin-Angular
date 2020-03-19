@@ -12,8 +12,6 @@ export const crudUrls = {
         delete:     { url: '/publishers/:id', param: {id:'_id'} } 
     },
     branches: { url: "/branches" },
-
-
     author: '/authors',
     book : '/books',
 
