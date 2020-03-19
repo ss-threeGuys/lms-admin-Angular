@@ -1,5 +1,6 @@
 <p-table #dt [columns]="cols" [value]="borrowers" selectionMode="single" [(selection)]="selectedBorrower"
-  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="rowsNumber" [lazy]="true"
+  (onLazyLoad)="loadBorrowersLazy($event)" [totalRecords]="totalRecords" sortField='name' sortOrder=1>
   <ng-template pTemplate="caption">
     List of Borrowers
   </ng-template>
@@ -32,38 +33,46 @@
   </ng-template>
 </p-table>
 
-<p-dialog header="Borrower Details" [(visible)]="displayDialog" [focusOnShow]="false" [responsive]="true" showEffect="fade"
-  [modal]="true" [style]="{width: '300px'}">
-  <div class="ui-g ui-fluid" *ngIf="borrower">
-    <div class="ui-g-12">
-      <div class="ui-g-4">
-        <label for="name">Name</label>
+<p-dialog header="Borrower Details" [(visible)]="displayDialog" [focusOnShow]="false" [responsive]="true"
+  showEffect="fade" [modal]="true" [style]="{width: '300px'}">
+  <form (ngSubmit)="save()" #borrowerForm="ngForm">
+    <div class="ui-g ui-fluid" *ngIf="borrower">
+      <div class="ui-g-12">
+        <div class="ui-g-4">
+          <label for="name">Name*</label>
+        </div>
+        <div class="ui-g-8">
+          <input pInputText class="form-control" id="name" name="name" [(ngModel)]="borrower.name" #name="ngModel"
+            autofocus required />
+          <div [hidden]="name.valid || name.pristine" style="color:red;">
+            Name must be entered
+          </div>
+        </div>
       </div>
-      <div class="ui-g-8">
-        <input pInputText id="name" [(ngModel)]="borrower.name" autofocus />
+      <div class="ui-g-12">
+        <div class="ui-g-4">
+          <label for="address">Address</label>
+        </div>
+        <div class="ui-g-8">
+          <input pInputText id="address" name="address" [(ngModel)]="borrower.address" autofocus />
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <div class="ui-g-4">
+          <label for="phone">Phone Number</label>
+        </div>
+        <div class="ui-g-8">
+          <input pInputText id="phone" type="tel" pattern="^\d{4}-\d{3}-\d{4}$" name="phone"
+            [(ngModel)]="borrower.phone" autofocus />
+        </div>
       </div>
     </div>
-    <div class="ui-g-12">
-      <div class="ui-g-4">
-        <label for="address">Address</label>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button *ngIf="!newBorrower" type="button" pButton icon="pi pi-times" (click)="delete()"
+          label="Delete"></button>
+        <button type="submit" pButton icon="pi pi-check" label="Save" [disabled]="!borrowerForm.form.valid"></button>
       </div>
-      <div class="ui-g-8">
-        <input pInputText id="address" [(ngModel)]="borrower.address" autofocus />
-      </div>
-    </div>
-    <div class="ui-g-12">
-      <div class="ui-g-4">
-        <label for="phone">Phone Number</label>
-      </div>
-      <div class="ui-g-8">
-        <input pInputText id="phone" [(ngModel)]="borrower.phone" autofocus />
-      </div>
-    </div>
-  </div>
-  <p-footer>
-    <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button *ngIf="!newBorrower" type="button" pButton icon="pi pi-times" (click)="delete()" label="Delete"></button>
-      <button type="button" pButton icon="pi pi-check" (click)="save()" label="Save" [disabled]="!(borrower?.name)"></button>
-    </div>
-  </p-footer>
+    </p-footer>
+  </form>
 </p-dialog>
