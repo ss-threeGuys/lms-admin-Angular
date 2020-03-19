@@ -127,7 +127,6 @@ export class BookComponent implements OnInit {
       { field: 'publisherName', header: 'Publisher' }
     ];
 
-    this.bookService.getBooks().subscribe(books => this.outputBooks = this.addBooksFromServiceToOutput(books))
    }
 
   addBooksFromServiceToOutput(books: Book[]) {
