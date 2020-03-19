@@ -1,0 +1,11 @@
+input:required:invalid {
+  border-color: #c00000;
+}
+
+.error-msg {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 3px 3px 3px 3px;
+  color: #d8000c;
+  background-color: #ffbaba;
+}
