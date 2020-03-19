@@ -1,6 +1,35 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { HttpParams } from "@angular/common/http";
 import { Borrower } from '../domain/borrower';
+import { environment } from 'src/environments/environment';
+
+const crudUrls = {
+  create: 'http://' + environment.crudUrls.baseHost + ':'
+    + environment.crudUrls.basePort
+    + environment.crudUrls.prefix
+    + environment.crudUrls.borrower.create.url,
+  retrieve: 'http://' + environment.crudUrls.baseHost + ':'
+    + environment.crudUrls.basePort
+    + environment.crudUrls.prefix
+    + environment.crudUrls.borrower.retrieve.url,
+  update: 'http://' + environment.crudUrls.baseHost + ':'
+    + environment.crudUrls.basePort
+    + environment.crudUrls.prefix
+    + environment.crudUrls.borrower.update.url,
+  delete: 'http://' + environment.crudUrls.baseHost + ':'
+    + environment.crudUrls.basePort
+    + environment.crudUrls.prefix
+    + environment.crudUrls.borrower.delete.url,
+};
+
+
+const params = {
+  create: environment.crudUrls.borrower.create.param,
+  retrieve: environment.crudUrls.borrower.retrieve.param,
+  update: environment.crudUrls.borrower.update.param,
+  delete: environment.crudUrls.borrower.delete.param,
+}
 
 @Injectable({
   providedIn: 'root'
@@ -8,32 +37,41 @@ import { Borrower } from '../domain/borrower';
 export class BorrowerService {
   constructor(private http: HttpClient) { }
 
-  getBorrowers() {
+  getBorrowers(currentPage: number, pageSize: number, sortField: string, sortOrder: number) {
+    sortField = sortField.trim();
+    const options = {
+      params: new HttpParams()
+        .set('sortField', sortField)
+        .set('sortOrder', sortOrder.toString())
+        .set('currentPage', currentPage.toString())
+        .set('pageSize', pageSize.toString())
+    };
     return this.http
-      .get<any>('http://localhost:3000/admin/borrowers')
-      .toPromise()
-      .then(res => <Borrower[]>res)
-      .then(data => {
-        return data;
-      });
+      .get<any[]>(crudUrls.retrieve + '/paging', options)
   }
 
   createBorrower(borrower) {
     return this.http
-      .post<Borrower>('http://localhost:3000/admin/borrowers', borrower)
-      .toPromise()
-      .then(data => data);
+      .post<Borrower>(crudUrls.create, borrower)
   }
 
   updateBorrower(borrower) {
+    let url = crudUrls.update;
+
+    for (let param of Object.keys(params.update)) {
+      url = url.replace(':' + param, borrower[params.update[param]]);
+    }
     return this.http
-      .put(`http://localhost:3000/admin/borrowers/${borrower._id}`, borrower)
-      .toPromise();
+      .put(url, borrower)
   }
 
   deleteBorrower(borrower) {
+    let url = crudUrls.delete;
+
+    for (let param of Object.keys(params.delete)) {
+      url = url.replace(':' + param, borrower[params.delete[param]]);
+    }
     return this.http
-      .delete(`http://localhost:3000/admin/borrowers/${borrower._id}`)
-      .toPromise();
+      .delete(url)
   }
 }
