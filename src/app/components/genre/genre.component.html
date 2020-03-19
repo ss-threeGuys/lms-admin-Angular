@@ -1,5 +1,6 @@
 <p-table #dt [columns]="cols" [value]="genres" selectionMode="single" [(selection)]="selectedGenre"
-  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="rowsNumber" [lazy]="true"
+  (onLazyLoad)="loadGenresLazy($event)" [totalRecords]="totalRecords" sortField='name' sortOrder=1>
   <ng-template pTemplate="caption">
     List of Genres
   </ng-template>
@@ -34,20 +35,26 @@
 
 <p-dialog header="Genre Details" [(visible)]="displayDialog" [focusOnShow]="false" [responsive]="true" showEffect="fade"
   [modal]="true" [style]="{width: '300px'}">
-  <div class="ui-g ui-fluid" *ngIf="genre">
-    <div class="ui-g-12">
-      <div class="ui-g-4">
-        <label for="name">Name</label>
-      </div>
-      <div class="ui-g-8">
-        <input pInputText id="name" [(ngModel)]="genre.name" autofocus />
+  <form (ngSubmit)="save()" #genreForm="ngForm">
+    <div class="ui-g ui-fluid" *ngIf="genre">
+      <div class="ui-g-12">
+        <div class="ui-g-4">
+          <label for="name">Name*</label>
+        </div>
+        <div class="ui-g-8">
+          <input pInputText class="form-control" id="name" name="name" [(ngModel)]="genre.name" #name="ngModel"
+            autofocus required />
+          <div [hidden]="name.valid || name.pristine" style="color:red;">
+            Name must be entered
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-  <p-footer>
-    <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button *ngIf="!newGenre" type="button" pButton icon="pi pi-times" (click)="delete()" label="Delete"></button>
-      <button type="button" [disabled]="!genre?.name" pButton icon="pi pi-check" (click)="save()" label="Save"></button>
-    </div>
-  </p-footer>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button *ngIf="!newGenre" type="button" pButton icon="pi pi-times" (click)="delete()" label="Delete"></button>
+        <button type="submit" [disabled]="!genreForm.form.valid" pButton icon="pi pi-check" label="Save"></button>
+      </div>
+    </p-footer>
+  </form>
 </p-dialog>
