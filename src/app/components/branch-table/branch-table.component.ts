@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Branch } from "src/app/domain/branch";
 import { BranchService } from "src/app/service/branch.service";
+import { LazyLoadEvent } from "primeng/api";
 
 @Component({
   selector: "app-branch-table",
@@ -14,13 +15,14 @@ export class BranchTableComponent implements OnInit {
   newBranch: boolean;
   branches: Branch[];
   cols: any[];
+  loading: boolean;
+  totalRecords;
+  currentPage: number = 1;
+  pageSize: number = 15;
 
   constructor(private branchService: BranchService) {}
 
   ngOnInit() {
-    this.branchService.getBranches().then(branches => {
-      return (this.branches = branches);
-    });
     this.cols = [
       { field: "branchName", header: "Branch Name" },
       { field: "branchAddress", header: "Branch Address" }
@@ -37,14 +39,14 @@ export class BranchTableComponent implements OnInit {
     let branches = [...this.branches];
 
     if (this.newBranch) {
-      this.branchService.createBranch(this.branch).then(branch => {
+      this.branchService.createBranch(this.branch).subscribe(branch => {
         branches.push(branch);
         this.branches = branches;
         this.branch = null;
         this.displayDialog = false;
       });
     } else {
-      this.branchService.updateBranch(this.branch).then(() => {
+      this.branchService.updateBranch(this.branch).subscribe(() => {
         branches[this.branches.indexOf(this.selectedBranch)] = this.branch;
         this.branches = branches;
         this.branch = null;
@@ -54,7 +56,7 @@ export class BranchTableComponent implements OnInit {
   }
 
   delete() {
-    this.branchService.deleteBranch(this.branch).then(() => {
+    this.branchService.deleteBranch(this.branch).subscribe(() => {
       let index = this.branches.indexOf(this.selectedBranch);
       this.branches = this.branches.filter((val, i) => i != index);
       this.branch = null;
@@ -74,5 +76,25 @@ export class BranchTableComponent implements OnInit {
       branch[prop] = c[prop];
     }
     return branch;
+  }
+
+  loadBranchesLazy(event: LazyLoadEvent) {
+    this.loading = true;
+    this.currentPage = 1 + event.first / this.pageSize;
+
+    this.branchService
+      .getBranchesWithPaging(
+        event.sortField,
+        event.sortOrder,
+        this.currentPage,
+        this.pageSize
+      )
+      .subscribe(branches => {
+        let pagingData = branches.pop();
+
+        this.totalRecords = pagingData.__paging.count;
+        this.loading = false;
+        this.branches = branches;
+      });
   }
 }
