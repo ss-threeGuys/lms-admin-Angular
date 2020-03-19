@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthorService } from '../../service/author.service';
 import { Author } from '../../domain/author';
+import { Validators, FormControl} from '@angular/forms';
 
 export class PrimeAuthor implements Author {
   constructor(public name?) { }
@@ -26,16 +27,21 @@ export class AuthorComponent implements OnInit {
 
   cols: any[];
 
+  nameField: FormControl = new FormControl('', Validators.required);
+
   constructor(private authorService: AuthorService) { }
 
   ngOnInit() {
     this.authorService.getAuthors().subscribe(authors => { return this.authors = authors });
 
-
     this.cols = [
-      { field: 'name', header: 'Name' },
-    ];
+      { field: 'name', header: 'Name' }
+    ]
   }
+
+
+
+
 
   showDialogToAdd() {
     this.newAuthor = true;
@@ -47,16 +53,18 @@ export class AuthorComponent implements OnInit {
 
     let authors = [...this.authors];
     if (this.newAuthor) {
-      this.authorService.createAuthor(this.author)
+      this.authorService.createAuthor({ "name": this.nameField.value })
         .subscribe(author => {
           authors.push(author);
           this.authors = authors;
-          this.author = null;
+          this.nameField.setValue(null);
           this.displayDialog = false;
         })
 
     } else {
-      console.log(this.author);
+    
+      this.author = {...this.author, "name" : this.nameField.value}
+  
       this.authorService.updateAuthor(this.author)
         .subscribe(() => {
           authors[this.authors.indexOf(this.selectedAuthor)] = this.author;
@@ -81,7 +89,9 @@ export class AuthorComponent implements OnInit {
 
   onRowSelect(event) {
     this.newAuthor = false;
+    console.log(event.data);
     this.author = this.cloneAuthor(event.data);
+    this.nameField.setValue(event.data.name);
     this.displayDialog = true;
   }
 

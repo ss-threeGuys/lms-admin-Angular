@@ -5,6 +5,7 @@ import { Book } from '../../domain/book';
 import { SelectItem } from 'primeng/api';
 import { GenreService } from '../../service/genre.service';
 import { PublisherService } from '../../service/publisher.service';
+import { Validators, FormControl} from '@angular/forms';
 
 
 export class BooksOutput {
@@ -43,8 +44,8 @@ export class BookComponent implements OnInit {
 
   booksOutput: BooksOutput
 
-  outputBooks = []
-
+  outputBooks : BooksOutput[] = []
+  
   selectedBook: BooksOutput;
 
   newBook: boolean;
@@ -57,6 +58,13 @@ export class BookComponent implements OnInit {
 
   allPublishers: SelectItem[];
 
+ bookForm = {
+    title: new FormControl('', Validators.required),
+    authors : new FormControl([]),
+    genres : new FormControl([]), 
+    publisher : new FormControl([])
+}
+
   constructor(
     private bookService: BookService,
     private authorService: AuthorService,
@@ -65,8 +73,7 @@ export class BookComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.bookService.getBooks().subscribe(books => this.addBooksFromServiceToOutput(books))
-
+   
     this.getAllAuthors();
 
     this.getAllGenres();
@@ -80,10 +87,11 @@ export class BookComponent implements OnInit {
       { field: 'publisherName', header: 'Publisher' }
     ];
 
-
-  }
+    this.bookService.getBooks().subscribe(books => this.outputBooks = this.addBooksFromServiceToOutput(books))
+   }
 
   addBooksFromServiceToOutput(books: Book[]) {
+    const outputBooks = []
     books.forEach(book => {
       let _id = book._id
       let title = book.title;
@@ -94,7 +102,7 @@ export class BookComponent implements OnInit {
       let publisherName = book.publisher ? book.publisher.name : null;
       let publisherId = book.publisher ? [book.publisher._id] : null;
 
-      this.outputBooks.push(
+      outputBooks.push(
         new BooksOutput(
           _id,
           title,
@@ -106,8 +114,7 @@ export class BookComponent implements OnInit {
           publisherId
         ));
     })
-    console.log("output books after get" + JSON.stringify(this.outputBooks));
-
+    return outputBooks;
   }
 
   getAllAuthors() {
@@ -138,6 +145,13 @@ export class BookComponent implements OnInit {
   }
 
   save() {
+    console.log(this.bookForm);
+    console.log(this.book);
+    this.book = {...this.book, 
+      title : this.bookForm.title.value, 
+      authors : this.bookForm.authors.value,
+      genres : this.bookForm.genres.value,
+      publisher : this.bookForm.publisher.value}
 
     let books: BooksOutput[] = [...this.outputBooks];
     if (this.newBook) {
@@ -155,6 +169,11 @@ export class BookComponent implements OnInit {
           books.push(new BooksOutput(book._id, book.title, authorNames, authorIds, genreNames, genreIds, publisherName, publisherId));
           this.outputBooks = books;
           this.book = null;
+          this.bookForm.title.setValue('');
+          this.bookForm.authors.setValue([]);
+          this.bookForm.genres.setValue([]);
+          this.bookForm.publisher.setValue([]);
+
           this.displayDialog = false;
         })
 
@@ -164,9 +183,13 @@ export class BookComponent implements OnInit {
         .subscribe(() => {
           this.outputBooks = [];
           this.bookService.getBooks().subscribe(_books => {
-            this.addBooksFromServiceToOutput(_books)
+            this.outputBooks = this.addBooksFromServiceToOutput(_books)
             this.book = null;
             this.displayDialog = false
+            this.bookForm.title.setValue('');
+            this.bookForm.authors.setValue([]);
+            this.bookForm.genres.setValue([]);
+            this.bookForm.publisher.setValue([]);
           })
         })
     }
@@ -198,9 +221,13 @@ export class BookComponent implements OnInit {
   cloneBook(c: BooksOutput): PrimeBook {
     let book = new PrimeBook();
     book._id = c._id;
+    this.bookForm.title.setValue(c.title);
     book.title = c.title;
+    this.bookForm.authors.setValue(c.authorIds);
     book.authors = c.authorIds;
+    this.bookForm.genres.setValue(c.genreIds);
     book.genres = c.genreIds;
+    this.bookForm.publisher.setValue(c.publisherId);
     book.publisher = c.publisherId ? c.publisherId : [];
     return book;
   }

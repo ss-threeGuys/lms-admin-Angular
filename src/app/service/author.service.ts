@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Author } from "../domain/author";
 import { environment } from  "../../environments/environment"
-const {baseHost, basePort, prefix, author} = environment.crudUrls;
-const BASEURL = `http://${baseHost}:${basePort}${prefix}${author}/`
+const {baseHost, basePort, prefix, author : authorURL} = environment.crudUrls;
+const BASEURL = `http://${baseHost}:${basePort}${prefix}${authorURL}/`
 
 
 

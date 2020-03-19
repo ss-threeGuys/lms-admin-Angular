@@ -1,14 +1,7 @@
-<p-table #dt [columns]="cols" [value]="outputBooks" selectionMode="single" [(selection)]="selectedBook"
+<p-table  [columns]="cols" [value]="outputBooks" selectionMode="single" [(selection)]="selectedBook"
   (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
   <ng-template pTemplate="caption">
     List of Books
-  </ng-template>
-  <ng-template pTemplate="caption">
-    <div style="text-align: right">
-      <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
-      <input type="text" pInputText size="30" placeholder="Global Filter"
-        (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
-    </div>
   </ng-template>
   <ng-template pTemplate="header" let-columns>
     <tr>
@@ -21,7 +14,6 @@
   <ng-template pTemplate="body" let-rowData let-columns="columns">
     <tr [pSelectableRow]="rowData">
       <td style="text-align: center" *ngFor="let col of columns">
-
         {{rowData[col.field]}}
       </td>
     </tr>
@@ -33,7 +25,7 @@
   </ng-template>
 </p-table>
 
-<p-dialog header="Book Details" [(visible)]="displayDialog" [focusOnShow]="false" [responsive]="true" showEffect="fade"
+<p-dialog header="Book Details" [(visible)]="displayDialog" [focusOnShow]="false" showEffect="fade"
   [modal]="true" [style]="{}">
   <div class="ui-g ui-fluid" *ngIf="book">
     <div class="ui-g-12">
@@ -41,7 +33,7 @@
         <label for="name">Title</label>
       </div>
       <div class="ui-g-8">
-        <input pInputText id="title" [(ngModel)]="book.title" autofocus />
+        <input pInputText id="title" [formControl]="bookForm.title" autofocus />
       </div>
     </div>
     <div class="ui-g-12">
@@ -49,7 +41,7 @@
         <label for="name">Authors</label>
       </div>
       <div class="ui-g-8 ui-select-choices">
-        <p-multiSelect [options]="allAuthors" [(ngModel)]="book.authors">
+        <p-multiSelect [options]="allAuthors" [formControl]="bookForm.authors">
 
         </p-multiSelect>
       </div>
@@ -59,7 +51,7 @@
         <label for="name">Genres</label>
       </div>
       <div class="ui-g-8 ui-select-choices">
-        <p-multiSelect [options]="allGenres" [(ngModel)]="book.genres">
+        <p-multiSelect [options]="allGenres" [formControl]="bookForm.genres" >
 
         </p-multiSelect>
       </div>
@@ -69,7 +61,7 @@
         <label for="name">Publisher</label>
       </div>
       <div class="ui-g-8 ui-select-choices">
-        <p-multiSelect [options]="allPublishers" [selectionLimit]="1" [(ngModel)]="book.publisher">
+        <p-multiSelect [options]="allPublishers" [selectionLimit]="1" [formControl]="bookForm.publisher">
         </p-multiSelect>
       </div>
     </div>
@@ -77,7 +69,7 @@
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
       <button *ngIf="!newBook" type="button" pButton icon="pi pi-times" (click)="delete()" label="Delete"></button>
-      <button [disabled]="!book?.title" type="button" pButton icon="pi pi-check" (click)="save()" label="Save"></button>
+      <button [disabled]="bookForm.title.invalid" type="button" pButton icon="pi pi-check" (click)="save()" label="Save"></button>
     </div>
   </p-footer>
 </p-dialog>

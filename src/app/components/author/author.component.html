@@ -40,14 +40,15 @@
         <label for="name">Name</label>
       </div>
       <div class="ui-g-8">
-        <input pInputText id="name" [(ngModel)]="author.name" autofocus />
+        <input pInputText id="name" autofocus [formControl]="nameField"
+            />
       </div>
     </div>
   </div>
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
       <button *ngIf="!newAuthor" type="button" pButton icon="pi pi-times" (click)="delete()" label="Delete"></button>
-      <button [disabled]="!author?.name"type="button" pButton icon="pi pi-check" (click)="save()" label="Save"></button>
+      <button [disabled]="nameField.invalid" type="button" pButton icon="pi pi-check" (click)="save()" label="Save"></button>
     </div>
   </p-footer>
 </p-dialog>
