@@ -1,15 +1,11 @@
 <p-table #dt [columns]="cols" [value]="authors" selectionMode="single" [(selection)]="selectedAuthor"
-  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="_pageSize" [totalRecords]="_count"
+  [sortField]="cols[0].field" [sortOrder]="1" [lazy]="true" (onLazyLoad)="onLoadData($event)" 
+>
   <ng-template pTemplate="caption">
     List of Authors
   </ng-template>
-  <ng-template pTemplate="caption">
-    <div style="text-align: right">
-      <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
-      <input type="text" pInputText size="30" placeholder="Global Filter"
-        (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
-    </div>
-  </ng-template>
+  
   <ng-template pTemplate="header" let-columns>
     <tr>
       <th *ngFor="let col of columns" [pSortableColumn]="col.field">
@@ -40,14 +36,15 @@
         <label for="name">Name</label>
       </div>
       <div class="ui-g-8">
-        <input pInputText id="name" [(ngModel)]="author.name" autofocus />
+        <input pInputText id="name" autofocus [formControl]="nameField"
+            />
       </div>
     </div>
   </div>
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
       <button *ngIf="!newAuthor" type="button" pButton icon="pi pi-times" (click)="delete()" label="Delete"></button>
-      <button [disabled]="!author?.name"type="button" pButton icon="pi pi-check" (click)="save()" label="Save"></button>
+      <button [disabled]="nameField.invalid" type="button" pButton icon="pi pi-check" (click)="save()" label="Save"></button>
     </div>
   </p-footer>
 </p-dialog>

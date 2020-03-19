@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthorService } from '../../service/author.service';
 import { Author } from '../../domain/author';
+import { Validators, FormControl } from '@angular/forms';
+import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
 
 export class PrimeAuthor implements Author {
   constructor(public name?) { }
@@ -14,6 +16,8 @@ export class PrimeAuthor implements Author {
 })
 export class AuthorComponent implements OnInit {
 
+  @ViewChild('dt') private tableElement: any;
+
   displayDialog: boolean;
 
   author: Author;
@@ -26,16 +30,57 @@ export class AuthorComponent implements OnInit {
 
   cols: any[];
 
+  nameField: FormControl = new FormControl('', Validators.required);
+
+  _sortField;
+
+  _sortOrder;
+  
+  _currentPage;
+
+  _pageSize = 10;
+
+  _count;
+
   constructor(private authorService: AuthorService) { }
 
   ngOnInit() {
-    this.authorService.getAuthors().subscribe(authors => { return this.authors = authors });
-
-
     this.cols = [
-      { field: 'name', header: 'Name' },
-    ];
+      { field: 'name', header: 'Name' }
+    ]
   }
+
+  protected ngAfterViewInit() {
+    this.tableElement.onSort.subscribe(data => {
+      
+      this._sortField = data.field;
+      this._sortOrder = data.order;
+    });
+  }
+
+  protected onLoadData(event: LazyLoadEvent) {
+    console.log(event);
+    this._currentPage = 1+(event.first/this._pageSize); 
+    this.authorService.getAuthorsPaging(
+      event.sortField, event.sortOrder, this._currentPage, this._pageSize
+      ).subscribe(authors => { 
+ 
+      let paging = authors.pop();
+     
+      this._count = paging.__paging.count;
+      console.log(this._count);
+
+      return this.authors = authors 
+    
+    });
+
+
+  }
+
+
+
+
+
 
   showDialogToAdd() {
     this.newAuthor = true;
@@ -47,16 +92,18 @@ export class AuthorComponent implements OnInit {
 
     let authors = [...this.authors];
     if (this.newAuthor) {
-      this.authorService.createAuthor(this.author)
+      this.authorService.createAuthor({ "name": this.nameField.value })
         .subscribe(author => {
           authors.push(author);
           this.authors = authors;
-          this.author = null;
+          this.nameField.setValue(null);
           this.displayDialog = false;
         })
 
     } else {
-      console.log(this.author);
+
+      this.author = { ...this.author, "name": this.nameField.value }
+
       this.authorService.updateAuthor(this.author)
         .subscribe(() => {
           authors[this.authors.indexOf(this.selectedAuthor)] = this.author;
@@ -81,7 +128,9 @@ export class AuthorComponent implements OnInit {
 
   onRowSelect(event) {
     this.newAuthor = false;
+    console.log(event.data);
     this.author = this.cloneAuthor(event.data);
+    this.nameField.setValue(event.data.name);
     this.displayDialog = true;
   }
 

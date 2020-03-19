@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BookService } from '../../service/book.service';
 import { AuthorService } from '../../service/author.service'
 import { Book } from '../../domain/book';
 import { SelectItem } from 'primeng/api';
 import { GenreService } from '../../service/genre.service';
 import { PublisherService } from '../../service/publisher.service';
+import { Validators, FormControl} from '@angular/forms';
+import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
 
 
 export class BooksOutput {
@@ -37,14 +39,16 @@ export class PrimeBook {
 })
 export class BookComponent implements OnInit {
 
+  @ViewChild('dt') private tableElement: any;
+  
   displayDialog: boolean;
 
   book: Book;
 
   booksOutput: BooksOutput
 
-  outputBooks = []
-
+  outputBooks : BooksOutput[] = []
+  
   selectedBook: BooksOutput;
 
   newBook: boolean;
@@ -57,6 +61,23 @@ export class BookComponent implements OnInit {
 
   allPublishers: SelectItem[];
 
+ bookForm = {
+    title: new FormControl('', Validators.required),
+    authors : new FormControl([]),
+    genres : new FormControl([]), 
+    publisher : new FormControl([])
+}
+
+  _sortField;
+
+  _sortOrder;
+  
+  _currentPage;
+
+  _pageSize = 10;
+
+  _count;
+
   constructor(
     private bookService: BookService,
     private authorService: AuthorService,
@@ -64,9 +85,35 @@ export class BookComponent implements OnInit {
     private publisherService: PublisherService
   ) { }
 
-  ngOnInit() {
-    this.bookService.getBooks().subscribe(books => this.addBooksFromServiceToOutput(books))
+  protected ngAfterViewInit() {
+    this.tableElement.onSort.subscribe(data => {
+      console.log(data);
+      this._sortField = data.field;
+      this._sortOrder = data.order;
+    });
+  }
 
+  protected onLoadData(event: LazyLoadEvent) {
+    console.log(event);
+    this._currentPage = 1+(event.first/this._pageSize); 
+    this.bookService.getBooksPaging(
+      event.sortField, event.sortOrder, this._currentPage, this._pageSize
+      ).subscribe(books => { 
+ 
+      let paging = books.pop();
+     
+      this._count = paging.__paging.count;
+      console.log(this._count);
+
+      this.outputBooks = this.addBooksFromServiceToOutput(books);
+    
+    });
+
+
+  }
+  
+  ngOnInit() {
+   
     this.getAllAuthors();
 
     this.getAllGenres();
@@ -80,10 +127,10 @@ export class BookComponent implements OnInit {
       { field: 'publisherName', header: 'Publisher' }
     ];
 
-
-  }
+   }
 
   addBooksFromServiceToOutput(books: Book[]) {
+    const outputBooks = []
     books.forEach(book => {
       let _id = book._id
       let title = book.title;
@@ -94,7 +141,7 @@ export class BookComponent implements OnInit {
       let publisherName = book.publisher ? book.publisher.name : null;
       let publisherId = book.publisher ? [book.publisher._id] : null;
 
-      this.outputBooks.push(
+      outputBooks.push(
         new BooksOutput(
           _id,
           title,
@@ -106,8 +153,7 @@ export class BookComponent implements OnInit {
           publisherId
         ));
     })
-    console.log("output books after get" + JSON.stringify(this.outputBooks));
-
+    return outputBooks;
   }
 
   getAllAuthors() {
@@ -139,6 +185,13 @@ export class BookComponent implements OnInit {
   }
 
   save() {
+    console.log(this.bookForm);
+    console.log(this.book);
+    this.book = {...this.book, 
+      title : this.bookForm.title.value, 
+      authors : this.bookForm.authors.value,
+      genres : this.bookForm.genres.value,
+      publisher : this.bookForm.publisher.value}
 
     let books: BooksOutput[] = [...this.outputBooks];
     if (this.newBook) {
@@ -156,6 +209,11 @@ export class BookComponent implements OnInit {
           books.push(new BooksOutput(book._id, book.title, authorNames, authorIds, genreNames, genreIds, publisherName, publisherId));
           this.outputBooks = books;
           this.book = null;
+          this.bookForm.title.setValue('');
+          this.bookForm.authors.setValue([]);
+          this.bookForm.genres.setValue([]);
+          this.bookForm.publisher.setValue([]);
+
           this.displayDialog = false;
         })
 
@@ -165,9 +223,13 @@ export class BookComponent implements OnInit {
         .subscribe(() => {
           this.outputBooks = [];
           this.bookService.getBooks().subscribe(_books => {
-            this.addBooksFromServiceToOutput(_books)
+            this.outputBooks = this.addBooksFromServiceToOutput(_books)
             this.book = null;
             this.displayDialog = false
+            this.bookForm.title.setValue('');
+            this.bookForm.authors.setValue([]);
+            this.bookForm.genres.setValue([]);
+            this.bookForm.publisher.setValue([]);
           })
         })
     }
@@ -199,9 +261,13 @@ export class BookComponent implements OnInit {
   cloneBook(c: BooksOutput): PrimeBook {
     let book = new PrimeBook();
     book._id = c._id;
+    this.bookForm.title.setValue(c.title);
     book.title = c.title;
+    this.bookForm.authors.setValue(c.authorIds);
     book.authors = c.authorIds;
+    this.bookForm.genres.setValue(c.genreIds);
     book.genres = c.genreIds;
+    this.bookForm.publisher.setValue(c.publisherId);
     book.publisher = c.publisherId ? c.publisherId : [];
     return book;
   }

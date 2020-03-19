@@ -12,6 +12,9 @@ export const crudUrls = {
         update:     { url: '/publishers/:id', param: {id:'_id'} },
         delete:     { url: '/publishers/:id', param: {id:'_id'} } 
     },
+    branches: { url: "/branches" },
+    author: '/authors',
+    book : '/books',
 
     genre : {
         create:     { url: '/genres', param:{} },
@@ -25,8 +28,9 @@ export const crudUrls = {
         retrieve:   { url: '/borrowers', param:{} },
         update:     { url: '/borrowers/:id', param: {id:'_id'} },
         delete:     { url: '/borrowers/:id', param: {id:'_id'} } 
-    },
-    branches: { url: "/branches" }
+
+    }
+
     
 }
 
