@@ -1,7 +1,14 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Branch } from "../domain/branch";
+import { environment } from "src/environments/environment";
 
+const baseHost = environment.crudUrls.baseHost,
+  basePort = environment.crudUrls.basePort,
+  prefix = environment.crudUrls.prefix,
+  url = environment.crudUrls.branches.url;
+
+const baseURL = `http://${baseHost}:${basePort}${prefix}${url}`;
 @Injectable({
   providedIn: "root"
 })
@@ -10,7 +17,7 @@ export class BranchService {
 
   getBranches() {
     return this.http
-      .get<any>("http://localhost:3000/admin/branches")
+      .get<any>(baseURL)
       .toPromise()
       .then(res => <Branch[]>res)
       .then(data => data);
@@ -18,20 +25,16 @@ export class BranchService {
 
   createBranch(branch) {
     return this.http
-      .post<Branch>("http://localhost:3000/admin/branches", branch)
+      .post<Branch>(baseURL, branch)
       .toPromise()
       .then(data => data);
   }
 
   updateBranch(branch) {
-    return this.http
-      .put(`http://localhost:3000/admin/branches/${branch._id}`, branch)
-      .toPromise();
+    return this.http.put(`${baseURL}/${branch._id}`, branch).toPromise();
   }
 
   deleteBranch(branch) {
-    return this.http
-      .delete(`http://localhost:3000/admin/branches/${branch._id}`)
-      .toPromise();
+    return this.http.delete(`${baseURL}/${branch._id}`).toPromise();
   }
 }
