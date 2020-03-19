@@ -1,9 +1,10 @@
-import Method from 'axios';
+import Method from "axios";
 
 export const crudUrls = {
-    baseHost: 'localhost',
-    basePort: 3000,
-    prefix: '/admin',
+  baseHost: "localhost",
+  basePort: 3000,
+  prefix: "/admin",
+
 
     publisher : {
         create:     { url: '/publishers', param:{} },
@@ -24,6 +25,8 @@ export const crudUrls = {
         retrieve:   { url: '/borrowers', param:{} },
         update:     { url: '/borrowers/:id', param: {id:'_id'} },
         delete:     { url: '/borrowers/:id', param: {id:'_id'} } 
-    }
+    },
+    branches: { url: "/branches" }
     
 }
+

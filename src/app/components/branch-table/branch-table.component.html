@@ -1,5 +1,7 @@
-<p-table #dt [columns]="cols" [value]="branches" selectionMode="single" [(selection)]="selectedBranch"
-  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+<p-table #dt [columns]="cols" [value]="branches" [lazy]="true" (onLazyLoad)="loadBranchesLazy($event)"
+  [totalRecords]="totalRecords" selectionMode="single" [(selection)]="selectedBranch"
+  (onRowSelect)="onRowSelect($event)" [paginator]="true" [sortField]="cols[0].field" [sortOrder]="1" [rows]="pageSize"
+  [loading]="loading">
   <ng-template pTemplate="caption">
     List of Branches
   </ng-template>
@@ -32,32 +34,41 @@
   </ng-template>
 </p-table>
 
-<p-dialog header="Branch Details" [(visible)]="displayDialog" [focusOnShow]="false" [responsive]="true"
-  showEffect="fade" [modal]="true" [style]="{width: '300px'}">
-  <div class="ui-g ui-fluid" *ngIf="branch">
-    <div class="ui-g-12">
-      <div class="ui-g-4">
-        <label for="branchName">Branch Name</label>
-      </div>
-      <div class="ui-g-8">
-        <input pInputText id="branchName" [(ngModel)]="branch.branchName" autofocus />
-      </div>
-    </div>
-    <div class="ui-g-12">
-      <div class="ui-g-4">
-        <label for="branchAddress">Branch Address</label>
-      </div>
-      <div class="ui-g-8">
-        <input pInputText id="branchAddress" [(ngModel)]="branch.branchAddress" />
-      </div>
-    </div>
-  </div>
+<form #branchForm="ngForm">
+  <p-dialog header="Branch Details" [(visible)]="displayDialog" [focusOnShow]="false" [responsive]="true"
+    showEffect="fade" [modal]="true" [style]="{width: '300px'}">
 
-  <p-footer>
-    <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button *ngIf="!newBranch" type="button" pButton icon="pi pi-times" (click)="delete()" label="Delete"></button>
-      <button type="button" pButton icon="pi pi-check" (click)="save()" [disabled]="!(branch?.branchName)"
-        label="Save"></button>
+    <div class="ui-g ui-fluid" *ngIf="branch">
+      <div class="ui-g-12">
+        <div class="ui-g-4">
+          <label for="branchName">Branch Name</label>
+        </div>
+        <div class="ui-g-8">
+          <input pInputText id="branchName" name="branchName" minlength="2" required #branchName="ngModel"
+            [(ngModel)]="branch.branchName" autofocus />
+          <div class="error-msg" *ngIf="branchName.touched && !branchName.valid">
+            <div *ngIf="branchName.errors.required">Branch Name is required </div>
+            <div *ngIf="branchName.errors.minlength">Min length is 2 </div>
+          </div>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <div class="ui-g-4">
+          <label for="branchAddress">Branch Address</label>
+        </div>
+        <div class="ui-g-8">
+          <input pInputText id="branchAddress" name="branchAddress" [(ngModel)]="branch.branchAddress" />
+        </div>
+      </div>
     </div>
-  </p-footer>
-</p-dialog>
+
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button *ngIf="!newBranch" type="button" pButton icon="pi pi-times" (click)="delete()" label="Delete"></button>
+        <button type="button" pButton icon="pi pi-check" (click)="save()" [disabled]="!branchForm.form.valid"
+          label="Save"></button>
+      </div>
+    </p-footer>
+
+  </p-dialog>
+</form>
